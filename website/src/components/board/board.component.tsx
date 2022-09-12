@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Chess, ShortMove, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
+import { getWindowMinDimension } from "../../utilities/window.utility";
+import { customPieces } from "../../utilities/chess.utility";
 
 export default function Board() {
     const [windowDimensions, setWindowDimensions] = useState(getWindowMinDimension());
@@ -49,27 +51,3 @@ export default function Board() {
         </div>
     );
 }
-
-function getWindowMinDimension(): number {
-    const { innerWidth: width, innerHeight: height } = window;
-    return Math.min(width, height);
-}
-
-function customPieces() {
-    const pieces = ['wP', 'wN', 'wB', 'wR', 'wQ', 'wK', 'bP', 'bN', 'bB', 'bR', 'bQ', 'bK'];
-    const returnPieces: any[string] = [];
-    pieces.map((p) => {
-        returnPieces[p] = ({ squareWidth } : { squareWidth: number }) => (
-            <div
-                style={{
-                    width: squareWidth,
-                    height: squareWidth,
-                    backgroundImage: `url(/media/${p}.png)`,
-                    backgroundSize: '100%',
-                }}
-            />
-        );
-        return null;
-    });
-    return returnPieces;
-};

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/google/uuid"
-	"github.com/leonidasdeim/zen-chess/internal/models"
+	"github.com/leonidasdeim/zen-chess/server/models"
 )
 
 func (s *Store) CreateSession(position interface{}) (*models.SessionDataModel, error) {
@@ -23,8 +23,8 @@ func (s *Store) UpdateSession(uuid string, position interface{}) (*models.Sessio
 	}
 
 	return &models.SessionDataModel{
-		Uuid:     uuid,
-		Position: position,
+		SessionId: uuid,
+		Position:  position,
 	}, nil
 }
 
@@ -40,7 +40,7 @@ func (s *Store) GetSession(uuid string) (*models.SessionDataModel, error) {
 	}
 
 	return &models.SessionDataModel{
-		Uuid:     uuid,
-		Position: position,
+		SessionId: uuid,
+		Position:  position,
 	}, nil
 }

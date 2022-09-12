@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/leonidasdeim/zen-chess/internal/models"
+	"github.com/leonidasdeim/zen-chess/server/models"
 )
 
 func (h *ApiHandler) HealthCheck(c *fiber.Ctx) error {
@@ -31,9 +31,9 @@ func (h *ApiHandler) CreateSession(c *fiber.Ctx) error {
 }
 
 func (h *ApiHandler) GetSession(c *fiber.Ctx) error {
-	uuid := c.Params("uuid")
+	uuid := c.Params("sessionId")
 	if uuid == "" {
-		return c.Status(http.StatusNotFound).JSON("Wrong UUID")
+		return c.Status(http.StatusNotFound).JSON("Wrong Session ID")
 	}
 
 	session, err := h.store.GetSession(uuid)
@@ -51,7 +51,7 @@ func (h *ApiHandler) UpdateSession(c *fiber.Ctx) error {
 		return err
 	}
 
-	session, err := h.store.UpdateSession(session.Uuid, session.Position)
+	session, err := h.store.UpdateSession(session.SessionId, session.Position)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(err)
 	}

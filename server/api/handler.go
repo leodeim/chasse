@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/leonidasdeim/zen-chess/internal/store"
+	"github.com/leonidasdeim/zen-chess/server/store"
 )
 
 type ApiHandler struct {

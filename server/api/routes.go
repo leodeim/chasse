@@ -12,6 +12,6 @@ func (h *ApiHandler) RegisterApiRoutes(app *fiber.App) {
 
 	session := apiV1.Group("/session")
 	session.Get("/new", h.CreateSession)
-	session.Get("/:uuid", h.GetSession)
+	session.Get("/:sessionId", h.GetSession)
 	session.Post("", h.UpdateSession)
 }
