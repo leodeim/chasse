@@ -1,8 +1,22 @@
 package models
 
+import (
+	"encoding/json"
+	"log"
+)
+
 type SessionDataModel struct {
-	Uuid     string      `json:"uuid"`
-	Position interface{} `json:"position"`
+	SessionId string      `json:"sessionId"`
+	Position  interface{} `json:"position"`
+}
+
+func (message *SessionDataModel) Encode() []byte {
+	json, err := json.Marshal(message)
+	if err != nil {
+		log.Println(err)
+	}
+
+	return json
 }
 
 var BLANK_BOARD = map[string]string{
