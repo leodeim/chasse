@@ -31,9 +31,9 @@ func (h *ApiHandler) CreateSession(c *fiber.Ctx) error {
 }
 
 func (h *ApiHandler) GetSession(c *fiber.Ctx) error {
-	uuid := c.Params("uuid")
+	uuid := c.Params("sessionId")
 	if uuid == "" {
-		return c.Status(http.StatusNotFound).JSON("Wrong UUID")
+		return c.Status(http.StatusNotFound).JSON("Wrong Session ID")
 	}
 
 	session, err := h.store.GetSession(uuid)

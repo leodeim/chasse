@@ -17,7 +17,7 @@ type Client struct {
 func serveClient(app *fiber.App, store *store.Store) {
 	app.Get("/ws/:session", websocket.New(func(c *websocket.Conn) {
 		sessionId := c.Params("session")
-		room := CreateOrGetRoom(sessionId)
+		room := FindOrCreateRoom(sessionId)
 		client := &Client{conn: c}
 		room.register <- client
 

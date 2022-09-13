@@ -16,10 +16,11 @@ type Room struct {
 	broadcast  chan *models.SessionDataModel
 }
 
-var rooms = make(map[*Room]bool)
+var activeRooms = make(map[*Room]bool)
 
-func CreateOrGetRoom(id string) *Room {
-	room := findExistingRoom(id)
+func FindOrCreateRoom(id string) *Room {
+	// TODO: verify room in redis
+	room := findActiveRoom(id)
 
 	if room == nil {
 		room = &Room{
@@ -30,15 +31,14 @@ func CreateOrGetRoom(id string) *Room {
 			broadcast:  make(chan *models.SessionDataModel),
 		}
 
-		rooms[room] = true
-		go room.roomRunner()
+		go room.run()
 	}
 
 	return room
 }
 
-func findExistingRoom(id string) *Room {
-	for room := range rooms {
+func findActiveRoom(id string) *Room {
+	for room := range activeRooms {
 		if room.SessionId == id {
 			return room
 		}
@@ -47,19 +47,20 @@ func findExistingRoom(id string) *Room {
 	return nil
 }
 
-func (room *Room) roomRunner() {
-	fmt.Printf("(Room %s) Runner starting \n", room.SessionId)
+func (room *Room) run() {
+	fmt.Printf("(Room %s) Runner is starting \n", room.SessionId)
+	activeRooms[room] = true
 
 	defer func() {
-		fmt.Printf("(Room %s) Runner stopped \n", room.SessionId)
-		delete(rooms, room)
+		fmt.Printf("(Room %s) Runner is stopping \n", room.SessionId)
+		delete(activeRooms, room)
 	}()
 
 	for {
 		select {
 		case client := <-room.register:
 			room.clients[client] = true
-			log.Printf("(Room %s) Client registered \n", room.SessionId)
+			log.Printf("(Room %s) Client registered, clients in the room: %d \n", room.SessionId, len(room.clients))
 
 		case message := <-room.broadcast:
 			log.Printf("(Room %s) Message will be sent: %+v\n", room.SessionId, message)
@@ -76,7 +77,12 @@ func (room *Room) roomRunner() {
 
 		case client := <-room.unregister:
 			delete(room.clients, client)
-			log.Printf("(Room %s) Client unregistered \n", room.SessionId)
+			log.Printf("(Room %s) Client unregistered, clients in the room: %d \n", room.SessionId, len(room.clients))
+
+			if len(room.clients) < 1 {
+				log.Printf("(Room %s) Is empty \n", room.SessionId)
+				return
+			}
 		}
 	}
 }
