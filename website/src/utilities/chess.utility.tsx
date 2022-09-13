@@ -1,4 +1,3 @@
-
 export function customPieces() {
     const pieces = ['wP', 'wN', 'wB', 'wR', 'wQ', 'wK', 'bP', 'bN', 'bB', 'bR', 'bQ', 'bK'];
     const returnPieces: any[string] = [];
@@ -17,3 +16,10 @@ export function customPieces() {
     });
     return returnPieces;
 };
+
+export enum Orientation {
+    white = "white",
+    black = "black",
+}
+
+export const START_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
