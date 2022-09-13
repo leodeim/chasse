@@ -1,9 +1,8 @@
 import Board from './components/board/board.component'
-import './App.css'
 
 export default function App() {
     return (
-        <div className="App">
+        <div className="flex flex-col items-center justify-center bg-zenground min-h-screen text-lg text-white">
             <Board />
         </div>
     );
