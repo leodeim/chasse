@@ -11,38 +11,36 @@ import (
 )
 
 type Client struct {
-	conn *websocket.Conn
+	conn      *websocket.Conn
+	sessionId string
 }
 
 func serveClient(app *fiber.App, store *store.Store) {
-	app.Get("/ws/:session", websocket.New(func(c *websocket.Conn) {
-		sessionId := c.Params("session")
-		room := FindOrCreateRoom(sessionId)
+	app.Get("/ws", websocket.New(func(c *websocket.Conn) {
 		client := &Client{conn: c}
-		room.register <- client
+		log.Printf("(Client %s) Logged in\n", client.conn.LocalAddr())
 
 		defer func() {
-			room.unregister <- client
+			RemoveClientFromRoom(client)
 			c.Close()
 		}()
 
 		for {
-			messageType, message, err := c.ReadMessage()
+			messageType, rawMessage, err := c.ReadMessage()
 			if err != nil {
-				log.Printf("(Room %s) WebSocket client read error: %v \n", room.SessionId, err)
+				log.Printf("(Client %s) WebSocket client read error: %v \n", client.conn.LocalAddr(), err)
 				return
 			}
 
 			if messageType == websocket.TextMessage {
-				session := &models.SessionDataModel{}
-				if err := json.Unmarshal(message, &session); err == nil {
-					if _, err := store.UpdateSession(session.SessionId, session.Position); err == nil {
-						room.broadcast <- session
-					}
+				message := &models.SessionActionMessage{}
+				if err := json.Unmarshal(rawMessage, &message); err == nil {
+					GameAction(*message, client, store)
+				} else {
+					log.Printf("(Client %s) Cant decode WebSocket message \n", client.conn.LocalAddr())
 				}
-
 			} else {
-				log.Printf("(Room %s) WebSocket message received of type: %d \n", room.SessionId, messageType)
+				log.Printf("(Client %s) WebSocket message received of type: %d \n", client.conn.LocalAddr(), messageType)
 			}
 		}
 	}))

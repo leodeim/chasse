@@ -4,10 +4,11 @@ import Game from './pages/game/game.page';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateWindowProperties } from './state/game/game.slice';
+import './socket/socket'
 
 export default function App() {
     const dispatch = useDispatch();
-    
+
     useEffect(() => {
         function handleResize() {
             dispatch(updateWindowProperties());
@@ -15,7 +16,7 @@ export default function App() {
 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

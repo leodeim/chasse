@@ -1,8 +1,10 @@
-import { Square } from "chess.js";
+import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { customPieces } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
 import { makeMove, selectBoardOrientation, selectGameFen, selectWindowMinDimension } from "../../state/game/game.slice";
+import { SendWebsocketJoinRoom, SendWebsocketMove } from "../../socket/socket";
+import { useEffect } from "react";
 
 
 export default function Board(props: any) {
@@ -11,12 +13,30 @@ export default function Board(props: any) {
     const boardOrientation = useSelector(selectBoardOrientation);
     const windowMinDimensions = useSelector(selectWindowMinDimension);
 
+    useEffect(() => {
+        SendWebsocketJoinRoom('a2e5b7a2-7a01-416a-be9a-40dd25bd0c7b')
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     function onDrop(sourceSquare: Square, targetSquare: Square) {
-        dispatch(makeMove({
+        // dispatch(makeMove({
+        //     from: sourceSquare,
+        //     to: targetSquare,
+        //     promotion: 'q'
+        // }))
+
+        const chess = new Chess()
+        chess.load(game)
+        chess.move({
             from: sourceSquare,
             to: targetSquare,
             promotion: 'q'
-        }))
+        })
+
+        SendWebsocketMove({
+            sessionId: 'a2e5b7a2-7a01-416a-be9a-40dd25bd0c7b',
+            fen: chess.fen()
+        })
 
         return true;
     }

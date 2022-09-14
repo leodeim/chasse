@@ -5,12 +5,22 @@ import (
 	"log"
 )
 
-type SessionDataModel struct {
-	SessionId string      `json:"sessionId"`
-	Position  interface{} `json:"position"`
+type WebsocketAction int
+
+const (
+	MOVE      WebsocketAction = 0
+	GO_BACK   WebsocketAction = 1
+	RESET     WebsocketAction = 2
+	JOIN_ROOM WebsocketAction = 3
+)
+
+type SessionActionMessage struct {
+	Action    WebsocketAction `json:"action"`
+	SessionId string          `json:"sessionId"`
+	Fen       string          `json:"fen"`
 }
 
-func (message *SessionDataModel) Encode() []byte {
+func (message *SessionActionMessage) Encode() []byte {
 	json, err := json.Marshal(message)
 	if err != nil {
 		log.Println(err)
@@ -19,37 +29,4 @@ func (message *SessionDataModel) Encode() []byte {
 	return json
 }
 
-var BLANK_BOARD = map[string]string{
-	"a1": "wR",
-	"a2": "wP",
-	"a7": "bP",
-	"a8": "bR",
-	"b1": "wN",
-	"b2": "wP",
-	"b7": "bP",
-	"b8": "bN",
-	"c1": "wB",
-	"c2": "wP",
-	"c7": "bP",
-	"c8": "bB",
-	"d1": "wQ",
-	"d2": "wP",
-	"d7": "bP",
-	"d8": "bQ",
-	"e1": "wK",
-	"e2": "wP",
-	"e7": "bP",
-	"e8": "bK",
-	"f1": "wB",
-	"f2": "wP",
-	"f7": "bP",
-	"f8": "bB",
-	"g1": "wN",
-	"g2": "wP",
-	"g7": "bP",
-	"g8": "bN",
-	"h1": "wR",
-	"h2": "wP",
-	"h7": "bP",
-	"h8": "bR",
-}
+var BLANK_BOARD = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
