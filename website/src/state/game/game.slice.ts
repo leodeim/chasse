@@ -36,7 +36,6 @@ export const gameSlice = createSlice({
             state.gameFenArray.push(START_POSITION)
         },
         reverseBoard(state) {
-            console.log("1test")
             state.boardOrientation =
                 (state.boardOrientation === Orientation.white) ? Orientation.black : Orientation.white;
         },

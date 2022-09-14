@@ -36,8 +36,11 @@ func serveClient(app *fiber.App, store *store.Store) {
 			if messageType == websocket.TextMessage {
 				session := &models.SessionDataModel{}
 				if err := json.Unmarshal(message, &session); err == nil {
-					if _, err := store.UpdateSession(session.SessionId, session.Position); err == nil {
+					_, err := store.UpdateSession(session.SessionId, session.Position)
+					if err == nil {
 						room.broadcast <- session
+					} else {
+						log.Println(err)
 					}
 				}
 

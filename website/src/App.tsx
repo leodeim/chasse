@@ -7,7 +7,7 @@ import { updateWindowProperties } from './state/game/game.slice';
 
 export default function App() {
     const dispatch = useDispatch();
-    
+
     useEffect(() => {
         function handleResize() {
             dispatch(updateWindowProperties());
@@ -15,7 +15,7 @@ export default function App() {
 
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return (

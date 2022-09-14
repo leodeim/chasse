@@ -4,6 +4,7 @@ import Controls from "../../components/controls/controls.component";
 import Menu from "../../components/menu/menu.component";
 
 export default function Game() {
+    
     let { sessionId } = useParams();
     console.log(sessionId)
 
