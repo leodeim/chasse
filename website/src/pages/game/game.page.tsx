@@ -1,15 +1,11 @@
 import { useParams } from "react-router-dom";
 import Board from "../../components/board/board.component";
 import Controls from "../../components/controls/controls.component";
-import Menu from "../../components/menu/controls.component";
+import Menu from "../../components/menu/menu.component";
 
 export default function Game() {
     let { sessionId } = useParams();
     console.log(sessionId)
-
-    function test() {
-
-    }
 
     return (
         <div>
@@ -18,7 +14,7 @@ export default function Game() {
             </div>
             <Board />
             <div className="flex justify-center">
-                <Controls back={test} reverse={test} reset={test} />
+                <Controls />
             </div>
         </div>
     );

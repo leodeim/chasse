@@ -1,78 +1,33 @@
-import { useEffect, useState } from "react";
-import { Chess, ShortMove, Square } from "chess.js";
+import { Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
-import { getWindowProperties } from "../../utilities/window.utility";
 import { customPieces } from "../../utilities/chess.utility";
-import Controls from "../controls/controls.component";
+import { useDispatch, useSelector } from "react-redux";
+import { makeMove, selectBoardOrientation, selectGameFen, selectWindowMinDimension } from "../../state/game/game.slice";
 
-enum Orientation {
-    white = "white",
-    black = "black",
-}
 
 export default function Board(props: any) {
-    const [windowProperties, setWindowProperties] = useState(getWindowProperties());
-    const [game, setGame] = useState(new Chess());
-    const [orientation, setOrientation] = useState(Orientation.white);
-
-    console.log(windowProperties.position)
-
-    useEffect(() => {
-        function handleResize() {
-            setWindowProperties(getWindowProperties());
-        }
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    function makeAMove(move: ShortMove | string) {
-        const gameCopy = { ...game };
-        const result = gameCopy.move(move);
-        setGame(gameCopy);
-        return result; // null if the move was illegal, the move object if the move was legal
-    }
+    const dispatch = useDispatch();
+    const game = useSelector(selectGameFen);
+    const boardOrientation = useSelector(selectBoardOrientation);
+    const windowMinDimensions = useSelector(selectWindowMinDimension);
 
     function onDrop(sourceSquare: Square, targetSquare: Square) {
-        const move = makeAMove({
+        dispatch(makeMove({
             from: sourceSquare,
             to: targetSquare,
-            promotion: 'q' // always promote to a queen for example simplicity
-        });
-
-        // illegal move
-        if (move === null) return false;
+            promotion: 'q'
+        }))
 
         return true;
     }
 
-    // function goBack() {
-    //     const gameCopy = { ...game };
-    //     gameCopy.undo()
-    //     setGame(gameCopy);
-    // }
-
-    // function resetBoard() {
-    //     const gameCopy = { ...game };
-    //     gameCopy.reset()
-    //     setGame(gameCopy);
-    // }
-
-    // function reverseBoard() {
-    //     if (orientation === Orientation.white) {
-    //         setOrientation(Orientation.black)
-    //     } else {
-    //         setOrientation(Orientation.white)
-    //     }
-    // }
-
     return (
         <div className="border-8 border-solid border-yellow">
             <Chessboard
-                position={game.fen()}
+                position={game}
                 onPieceDrop={onDrop}
-                boardOrientation={orientation}
-                boardWidth={windowProperties.minDimension * 0.8}
+                boardOrientation={boardOrientation}
+                boardWidth={windowMinDimensions * 0.8}
                 customDarkSquareStyle={{ backgroundColor: '' }}
                 customPieces={customPieces()}
             />
