@@ -5,8 +5,11 @@ module.exports = {
   ],
   theme: {
     colors: {
-      'zenground': '#8ba28c',
-      'zensquare': '#f0d9b5',
+      'green': '#8ba28c',
+      'darkGreen': '#7E937F',
+      'yellow': '#f0d9b5',
+      'black': '#000000',
+      'grey': '#7b7b7b',
     },
     extend: {},
   },

@@ -1,5 +1,5 @@
 
-export default function Board() {
+export default function Home() {
     return (
         <div>
         </div>

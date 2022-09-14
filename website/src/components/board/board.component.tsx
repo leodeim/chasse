@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Chess, ShortMove, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
-import { getWindowMinDimension } from "../../utilities/window.utility";
+import { getWindowProperties } from "../../utilities/window.utility";
 import { customPieces } from "../../utilities/chess.utility";
 import Controls from "../controls/controls.component";
 
@@ -9,15 +9,17 @@ enum Orientation {
     white = "white",
     black = "black",
 }
-  
-export default function Board() {
-    const [windowDimensions, setWindowDimensions] = useState(getWindowMinDimension());
+
+export default function Board(props: any) {
+    const [windowProperties, setWindowProperties] = useState(getWindowProperties());
     const [game, setGame] = useState(new Chess());
     const [orientation, setOrientation] = useState(Orientation.white);
 
+    console.log(windowProperties.position)
+
     useEffect(() => {
         function handleResize() {
-            setWindowDimensions(getWindowMinDimension());
+            setWindowProperties(getWindowProperties());
         }
 
         window.addEventListener('resize', handleResize);
@@ -44,41 +46,36 @@ export default function Board() {
         return true;
     }
 
-    function goBack() {
-        const gameCopy = { ...game };
-        gameCopy.undo()
-        setGame(gameCopy);
-    }
+    // function goBack() {
+    //     const gameCopy = { ...game };
+    //     gameCopy.undo()
+    //     setGame(gameCopy);
+    // }
 
-    function resetBoard() {
-        const gameCopy = { ...game };
-        gameCopy.reset()
-        setGame(gameCopy);
-    }
+    // function resetBoard() {
+    //     const gameCopy = { ...game };
+    //     gameCopy.reset()
+    //     setGame(gameCopy);
+    // }
 
-    function reverseBoard() {
-        if (orientation === Orientation.white) {
-            setOrientation(Orientation.black)
-        } else {
-            setOrientation(Orientation.white)
-        }
-    }
+    // function reverseBoard() {
+    //     if (orientation === Orientation.white) {
+    //         setOrientation(Orientation.black)
+    //     } else {
+    //         setOrientation(Orientation.white)
+    //     }
+    // }
 
     return (
-        <div>
-            <div className="border-8 border-solid border-zensquare">
-                <Chessboard
-                    position={game.fen()}
-                    onPieceDrop={onDrop}
-                    boardOrientation={orientation}
-                    boardWidth={windowDimensions * 0.8}
-                    customDarkSquareStyle={{ backgroundColor: '' }}
-                    customPieces={customPieces()}
-                />
-            </div>
-            <div className="flex justify-center">
-                <Controls back={goBack} reverse={reverseBoard} reset={resetBoard} />
-            </div>
+        <div className="border-8 border-solid border-yellow">
+            <Chessboard
+                position={game.fen()}
+                onPieceDrop={onDrop}
+                boardOrientation={orientation}
+                boardWidth={windowProperties.minDimension * 0.8}
+                customDarkSquareStyle={{ backgroundColor: '' }}
+                customPieces={customPieces()}
+            />
         </div>
     );
 }
