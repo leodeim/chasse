@@ -4,6 +4,7 @@ import Game from './pages/game/game.page';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updateWindowProperties } from './state/game/game.slice';
+import './socket/socket'
 
 export default function App() {
     const dispatch = useDispatch();

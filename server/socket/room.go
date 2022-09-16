@@ -13,14 +13,13 @@ type Room struct {
 	clients    map[*Client]bool
 	register   chan *Client
 	unregister chan *Client
-	broadcast  chan *models.SessionDataModel
+	broadcast  chan *models.SessionActionMessage
 }
 
-var activeRooms = make(map[*Room]bool)
+var activeRooms = make(map[string]*Room)
 
 func FindOrCreateRoom(id string) *Room {
-	// TODO: verify room in redis
-	room := findActiveRoom(id)
+	room := FindRoom(id)
 
 	if room == nil {
 		room = &Room{
@@ -28,7 +27,7 @@ func FindOrCreateRoom(id string) *Room {
 			clients:    make(map[*Client]bool),
 			register:   make(chan *Client),
 			unregister: make(chan *Client),
-			broadcast:  make(chan *models.SessionDataModel),
+			broadcast:  make(chan *models.SessionActionMessage),
 		}
 
 		go room.run()
@@ -37,28 +36,32 @@ func FindOrCreateRoom(id string) *Room {
 	return room
 }
 
-func findActiveRoom(id string) *Room {
-	for room := range activeRooms {
-		if room.SessionId == id {
-			return room
-		}
+func RemoveClientFromRoom(client *Client) {
+	if room := FindRoom(client.sessionId); room != nil {
+		room.unregister <- client
 	}
+}
 
+func FindRoom(id string) *Room {
+	if room, found := activeRooms[id]; found {
+		return room
+	}
 	return nil
 }
 
 func (room *Room) run() {
 	fmt.Printf("(Room %s) Runner is starting \n", room.SessionId)
-	activeRooms[room] = true
+	activeRooms[room.SessionId] = room
 
 	defer func() {
 		fmt.Printf("(Room %s) Runner is stopping \n", room.SessionId)
-		delete(activeRooms, room)
+		delete(activeRooms, room.SessionId)
 	}()
 
 	for {
 		select {
 		case client := <-room.register:
+			client.sessionId = room.SessionId
 			room.clients[client] = true
 			log.Printf("(Room %s) Client registered, clients in the room: %d \n", room.SessionId, len(room.clients))
 

@@ -1,12 +1,11 @@
-import { Square } from "chess.js";
+import { Chess, Square } from "chess.js";
 import { Chessboard } from "react-chessboard";
 import { customPieces } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
 import { makeMove, selectBoardOrientation, selectGameFen, selectWindowMinDimension } from "../../state/game/game.slice";
-import { client, w3cwebsocket as W3CWebSocket } from "websocket";
+import { SendWebsocketJoinRoom, SendWebsocketMove } from "../../socket/socket";
 import { useEffect } from "react";
 
-let wsClient = new W3CWebSocket('ws://127.0.0.1:8085/ws/123');
 
 export default function Board(props: any) {
     const dispatch = useDispatch();
@@ -15,27 +14,29 @@ export default function Board(props: any) {
     const windowMinDimensions = useSelector(selectWindowMinDimension);
 
     useEffect(() => {
-        wsClient.onopen = () => {
-            console.log('WebSocket Client Connected');
-        };
-        wsClient.onmessage = (message) => {
-            console.log(message);
-        };
+        SendWebsocketJoinRoom('a2e5b7a2-7a01-416a-be9a-40dd25bd0c7b')
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     function onDrop(sourceSquare: Square, targetSquare: Square) {
-        dispatch(makeMove({
+        // dispatch(makeMove({
+        //     from: sourceSquare,
+        //     to: targetSquare,
+        //     promotion: 'q'
+        // }))
+
+        const chess = new Chess()
+        chess.load(game)
+        chess.move({
             from: sourceSquare,
             to: targetSquare,
             promotion: 'q'
-        }))
+        })
 
-        wsClient.send(JSON.stringify({
-            sessionId: "sadsadsa",
-            position: "userevent"
-        }))
-
-        console.log(wsClient.readyState)
+        SendWebsocketMove({
+            sessionId: 'a2e5b7a2-7a01-416a-be9a-40dd25bd0c7b',
+            fen: chess.fen()
+        })
 
         return true;
     }

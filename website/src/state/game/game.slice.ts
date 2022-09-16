@@ -5,13 +5,13 @@ import { getWindowProperties, WindowProperties } from '../../utilities/window.ut
 import { RootState } from '../store';
 
 interface GameState {
-    gameFenArray: any[],
+    gameFen: string,
     boardOrientation: Orientation,
     windowProperties: WindowProperties
 }
 
 const initialState: GameState = {
-    gameFenArray: [START_POSITION],
+    gameFen: START_POSITION,
     boardOrientation: Orientation.white,
     windowProperties: getWindowProperties()
 };
@@ -20,20 +20,12 @@ export const gameSlice = createSlice({
     name: 'game',
     initialState,
     reducers: {
-        makeMove(state, action: PayloadAction<ShortMove | string>) {
-            let game = new Chess()
-            game.load(state.gameFenArray.slice(-1)[0])
-            const result = game.move(action.payload);
-
-            if (result !== null) {
-                state.gameFenArray.push(game.fen())
-            }
+        makeMove(state, action: PayloadAction<string>) {
+            state.gameFen = action.payload
         },
         goBack(state) {
-            state.gameFenArray.pop()
         },
         resetBoard(state) {
-            state.gameFenArray.push(START_POSITION)
         },
         reverseBoard(state) {
             state.boardOrientation =
@@ -52,7 +44,7 @@ export const {
     reverseBoard,
     updateWindowProperties } = gameSlice.actions;
 
-export const selectGameFen = (state: RootState) => state.game.gameFenArray.slice(-1)[0]
+export const selectGameFen = (state: RootState) => state.game.gameFen
 export const selectBoardOrientation = (state: RootState) => state.game.boardOrientation;
 export const selectWindowMinDimension = (state: RootState) => state.game.windowProperties.minDimension;
 export const selectWindowPosition = (state: RootState) => state.game.windowProperties.position;

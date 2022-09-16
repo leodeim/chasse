@@ -45,13 +45,13 @@ func (h *ApiHandler) GetSession(c *fiber.Ctx) error {
 }
 
 func (h *ApiHandler) UpdateSession(c *fiber.Ctx) error {
-	session := &models.SessionDataModel{}
+	session := &models.SessionActionMessage{}
 
 	if err := c.BodyParser(&session); err != nil {
 		return err
 	}
 
-	session, err := h.store.UpdateSession(session.SessionId, session.Position)
+	session, err := h.store.UpdateSession(session.SessionId, session.Fen)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(err)
 	}
