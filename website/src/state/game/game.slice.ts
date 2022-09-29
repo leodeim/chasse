@@ -1,17 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Chess, ShortMove } from 'chess.js';
 import { Orientation, START_POSITION } from '../../utilities/chess.utility';
+import { IStack, Stack } from '../../utilities/stack.utility';
 import { getWindowProperties, WindowProperties } from '../../utilities/window.utility';
 import { RootState } from '../store';
 
 interface GameState {
     gameFen: string,
+    history: IStack<string>,
     boardOrientation: Orientation,
     windowProperties: WindowProperties
 }
 
 const initialState: GameState = {
     gameFen: START_POSITION,
+    history: new Stack(100),
     boardOrientation: Orientation.white,
     windowProperties: getWindowProperties()
 };
@@ -21,11 +23,16 @@ export const gameSlice = createSlice({
     initialState,
     reducers: {
         makeMove(state, action: PayloadAction<string>) {
-            state.gameFen = action.payload
+            state.gameFen = action.payload;
+            state.history.push(action.payload);
         },
         goBack(state) {
+            state.history.pop();
+            let newFen = state.history.pop();
+            if (newFen !== undefined) makeMove(newFen);
         },
-        resetBoard(state) {
+        resetBoard() {
+            makeMove(START_POSITION);
         },
         reverseBoard(state) {
             state.boardOrientation =

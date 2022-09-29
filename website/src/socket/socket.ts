@@ -1,9 +1,6 @@
-import { useDispatch } from "react-redux";
 import { w3cwebsocket } from "websocket";
 
 export const wsClient = new w3cwebsocket('ws://127.0.0.1:8085/ws');
-
-console.log("SOCKET TEST TEST TEST")
 
 export enum WebsocketAction {
 	MOVE = 0,

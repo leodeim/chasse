@@ -1,13 +1,29 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { combineEpics, createEpicMiddleware } from 'redux-observable';
+import { makeMoveEpic } from './game/game.epic';
 import gameReducer from './game/game.slice';
 
-export const store = configureStore({
-    reducer: {
-        game: gameReducer,
-    },
-});
+const rootEpic = combineEpics<any>(makeMoveEpic)
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
+const rootReducer = combineReducers({
+    game: gameReducer,
+})
+
+const dependencies = {
+    // axios: axios,
+}
+
+const epicMiddleware = createEpicMiddleware({ dependencies })
+
+export type EpicDependenciesType = typeof dependencies
+
+export const store = configureStore({
+    reducer: rootReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(epicMiddleware),
+})
+
+epicMiddleware.run(rootEpic)
+
+
 export type RootState = ReturnType<typeof store.getState>
-// Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch
