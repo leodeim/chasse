@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
 import Board from "../../components/board/board.component";
 import Controls from "../../components/controls/controls.component";
 import Menu from "../../components/menu/menu.component";
