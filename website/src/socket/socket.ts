@@ -35,6 +35,9 @@ export function SendWebsocketMove(data: MoveMessage) {
 }
 
 export function SendWebsocketJoinRoom(sessionId: string) {
+    if (sessionId === '' || sessionId === undefined || !wsClient.OPEN) {
+        return;
+    }
     console.log("SendWebsocketJoinRoom")
     let msg: WebsocketMessage = {
         action: WebsocketAction.JOIN_ROOM,
