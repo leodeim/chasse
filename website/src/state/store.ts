@@ -9,13 +9,7 @@ const rootReducer = combineReducers({
     game: gameReducer,
 })
 
-const dependencies = {
-    // axios: axios,
-}
-
-const epicMiddleware = createEpicMiddleware({ dependencies })
-
-export type EpicDependenciesType = typeof dependencies
+const epicMiddleware = createEpicMiddleware()
 
 export const store = configureStore({
     reducer: rootReducer,

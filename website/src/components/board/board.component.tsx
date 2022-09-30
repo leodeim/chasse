@@ -1,43 +1,62 @@
-import { Chess, Square } from "chess.js";
-import { Chessboard } from "react-chessboard";
-import { customPieces } from "../../utilities/chess.utility";
-import { useSelector } from "react-redux";
-import { selectBoardOrientation, selectGameFen, selectWindowMinDimension } from "../../state/game/game.slice";
-import { SendWebsocketJoinRoom, SendWebsocketMove } from "../../socket/socket";
+import Chessboard from "../../lib/Chessboard";
+import { calculateMove, customPieces, Piece, Square } from "../../utilities/chess.utility";
+import { useDispatch, useSelector } from "react-redux";
+import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectWindowMinDimension, selectWsState } from "../../state/game/game.slice";
+import { SendWebsocketJoinRoom } from "../../socket/socket";
 import { useEffect } from "react";
 
 
-export default function Board(props: any) {
-    const game = useSelector(selectGameFen);
+export default function GameBoard(props: any) {
+    const dispatch = useDispatch();
+    const gamePosition = useSelector(selectGamePosition);
     const boardOrientation = useSelector(selectBoardOrientation);
     const windowMinDimensions = useSelector(selectWindowMinDimension);
+    const sessionId = useSelector(selectSessionId);
+    const wsState = useSelector(selectWsState)
+
+    let gamePositionCopy = {
+        ...gamePosition
+    };
 
     useEffect(() => {
-        SendWebsocketJoinRoom('a2e5b7a2-7a01-416a-be9a-40dd25bd0c7b')
+        if (wsState === true) {
+            SendWebsocketJoinRoom(sessionId)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [wsState]);
 
-    function onDrop(sourceSquare: Square, targetSquare: Square) {
-        const chess = new Chess()
-        if (game !== undefined) chess.load(game)
-        chess.move({
-            from: sourceSquare,
-            to: targetSquare,
-            promotion: 'q'
-        })
+    function onDrop(obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }) {
+        let newGamePosition = calculateMove(obj, gamePosition)
+
+        if (newGamePosition !== null) {
+            dispatch(makeMove({
+                position: newGamePosition,
+                sessionId: sessionId
+            }));
+        }
 
         return true;
     }
 
     return (
-        <div className="border-8 border-solid border-yellow">
+        <div>
             <Chessboard
-                position={game}
-                onPieceDrop={onDrop}
-                boardOrientation={boardOrientation}
-                boardWidth={windowMinDimensions * 0.8}
-                customDarkSquareStyle={{ backgroundColor: '' }}
-                customPieces={customPieces()}
+                position={gamePositionCopy}
+                onDrop={onDrop}
+                orientation={boardOrientation}
+                width={windowMinDimensions * 0.6}
+                darkSquareStyle={{ backgroundColor: '' }}
+                pieces={customPieces()}
+                sparePieces={true}
+                dropOffBoard={'trash'}
+                transitionDuration={200}
+                showNotation={false}
+                dropSquareStyle={{
+                    boxShadow: 'inset 0 0 1px 10px #7E937F'
+                }}
+                boardStyle={{
+                    boxShadow: `0 5px 30px rgba(0, 0, 0, 0.5)`
+                  }}
             />
         </div>
     );

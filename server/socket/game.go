@@ -22,7 +22,7 @@ func GameAction(data models.SessionActionMessage, client *Client, store *store.S
 func Move(data models.SessionActionMessage, store *store.Store) {
 	room := FindRoom(data.SessionId)
 	if room != nil {
-		store.UpdateSession(data.SessionId, data.Fen)
+		store.UpdateSession(data.SessionId, data.Position)
 		room.broadcast <- &data
 	}
 }

@@ -11,34 +11,34 @@ export enum WebsocketAction {
 
 type WebsocketMessage = {
     action: WebsocketAction,
-    fen?: string,
+    position?: string,
     sessionId: string
 }
 
 export type MoveMessage = {
-    fen: string,
+    position: string,
     sessionId: string
 }
-
-wsClient.onopen = () => {
-    console.log('WebSocket Client Connected');
-};
 
 export function SendWebsocketMove(data: MoveMessage) {
     console.log("SendWebsocketMove")
     let msg: WebsocketMessage = {
         action: WebsocketAction.MOVE,
-        fen: data.fen,
+        position: data.position,
         sessionId: data.sessionId
     }
     wsClient.send(JSON.stringify(msg));
 }
 
-export function SendWebsocketJoinRoom(sessionId: string) {
+export function SendWebsocketJoinRoom(sessionId: string): boolean {
+    if (sessionId === '' || sessionId === undefined) {
+        return false;
+    }
     console.log("SendWebsocketJoinRoom")
     let msg: WebsocketMessage = {
         action: WebsocketAction.JOIN_ROOM,
         sessionId: sessionId
     }
     wsClient.send(JSON.stringify(msg));
+    return true;
 }

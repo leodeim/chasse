@@ -17,7 +17,7 @@ const (
 type SessionActionMessage struct {
 	Action    WebsocketAction `json:"action"`
 	SessionId string          `json:"sessionId"`
-	Fen       string          `json:"fen"`
+	Position  string          `json:"position"`
 }
 
 func (message *SessionActionMessage) Encode() []byte {

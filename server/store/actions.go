@@ -24,7 +24,7 @@ func (s *Store) UpdateSession(uuid string, position string) (*models.SessionActi
 
 	return &models.SessionActionMessage{
 		SessionId: uuid,
-		Fen:       position,
+		Position:  position,
 	}, nil
 }
 
@@ -41,6 +41,6 @@ func (s *Store) GetSession(uuid string) (*models.SessionActionMessage, error) {
 
 	return &models.SessionActionMessage{
 		SessionId: uuid,
-		Fen:       position,
+		Position:  position,
 	}, nil
 }

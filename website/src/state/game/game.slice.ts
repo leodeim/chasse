@@ -1,38 +1,55 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Orientation, START_POSITION } from '../../utilities/chess.utility';
-import { IStack, Stack } from '../../utilities/stack.utility';
+import { Orientation, PositionObject, START_POSITION_OBJECT } from '../../utilities/chess.utility';
+import { peek, push, removeLast } from '../../utilities/stack.utility';
 import { getWindowProperties, WindowProperties } from '../../utilities/window.utility';
 import { RootState } from '../store';
+import isEqual from 'lodash.isequal';
 
+export type MoveItem = {
+    position: PositionObject
+    sessionId: string
+}
 interface GameState {
-    gameFen: string,
-    history: IStack<string>,
+    gamePosition: PositionObject,
+    history: PositionObject[],
     boardOrientation: Orientation,
-    windowProperties: WindowProperties
+    windowProperties: WindowProperties,
+    sessionId: string,
+    loading: boolean,
+    wsState: boolean
 }
 
 const initialState: GameState = {
-    gameFen: START_POSITION,
-    history: new Stack(100),
+    gamePosition: START_POSITION_OBJECT,
+    history: [START_POSITION_OBJECT],
     boardOrientation: Orientation.white,
-    windowProperties: getWindowProperties()
+    windowProperties: getWindowProperties(),
+    sessionId: 'a88f494f-50f5-475e-98cf-2b0d9e2f05f4',
+    loading: false,
+    wsState: false
 };
 
 export const gameSlice = createSlice({
     name: 'game',
     initialState,
     reducers: {
-        makeMove(state, action: PayloadAction<string>) {
-            state.gameFen = action.payload;
-            state.history.push(action.payload);
+        makeMove(state, action: PayloadAction<MoveItem>) {
+            state.loading = true;
+            state.gamePosition = action.payload.position;
         },
-        goBack(state) {
-            state.history.pop();
-            let newFen = state.history.pop();
-            if (newFen !== undefined) makeMove(newFen);
+        makeMoveSuccessful(state, _: PayloadAction<MoveItem>) {
+            state.loading = false;
         },
-        resetBoard() {
-            makeMove(START_POSITION);
+        historyPop(state) {
+            state.history = removeLast(state.history);
+        },
+        updatePosition(state, action: PayloadAction<string>) {
+            let obj = JSON.parse(action.payload);
+            let lastObj = peek(state.history);
+            state.gamePosition = obj;
+            if (!isEqual(obj, lastObj)) {
+                state.history = push(state.history, obj)
+            }
         },
         reverseBoard(state) {
             state.boardOrientation =
@@ -41,19 +58,27 @@ export const gameSlice = createSlice({
         updateWindowProperties(state) {
             state.windowProperties = getWindowProperties();
         },
+        updateWsState(state, action: PayloadAction<boolean>) {
+            state.wsState = action.payload;
+        },
     },
 });
 
 export const {
     makeMove,
-    goBack,
-    resetBoard,
     reverseBoard,
-    updateWindowProperties } = gameSlice.actions;
+    updateWindowProperties,
+    updatePosition,
+    historyPop,
+    updateWsState,
+    makeMoveSuccessful } = gameSlice.actions;
 
-export const selectGameFen = (state: RootState) => state.game.gameFen
+export const selectGamePosition = (state: RootState) => state.game.gamePosition
 export const selectBoardOrientation = (state: RootState) => state.game.boardOrientation;
 export const selectWindowMinDimension = (state: RootState) => state.game.windowProperties.minDimension;
 export const selectWindowPosition = (state: RootState) => state.game.windowProperties.position;
+export const selectSessionId = (state: RootState) => state.game.sessionId;
+export const selectHistory = (state: RootState) => state.game.history;
+export const selectWsState = (state: RootState) => state.game.wsState;
 
 export default gameSlice.reducer;
