@@ -1,6 +1,5 @@
-import { Chess, Square } from "chess.js";
-import { Chessboard } from "react-chessboard";
-import { customPieces } from "../../utilities/chess.utility";
+import Chessboard from "../../lib/Chessboard";
+import { customPieces, Piece, Square } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
 import { makeMove, selectBoardOrientation, selectGameFen, selectSessionId, selectWindowMinDimension } from "../../state/game/game.slice";
 import { SendWebsocketJoinRoom } from "../../socket/socket";
@@ -19,34 +18,42 @@ export default function Board(props: any) {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    function onDrop(sourceSquare: Square, targetSquare: Square) {
-        const chess = new Chess()
-        if (game !== undefined) chess.load(game)
-        let result = chess.move({
-            from: sourceSquare,
-            to: targetSquare,
-            promotion: 'q'
-        })
+    function onDrop(obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }) {
+        console.log(obj)
+        // TODO: move logic
 
-        if (result != null) {
-            dispatch(makeMove({
-                position: chess.fen(),
-                sessionId: sessionId
-            }));
-        }
+        // if (result != null) {
+        //     dispatch(makeMove({
+        //         position: chess.fen(),
+        //         sessionId: sessionId
+        //     }));
+        // }
 
         return true;
     }
 
+    function getPositionObject(position: any) {
+        console.log(position)
+    }
+
+    console.log(JSON.stringify(game))
+
     return (
-        <div className="border-8 border-solid border-yellow">
+        <div>
             <Chessboard
                 position={game}
-                onPieceDrop={onDrop}
-                boardOrientation={boardOrientation}
-                boardWidth={windowMinDimensions * 0.8}
-                customDarkSquareStyle={{ backgroundColor: '' }}
-                customPieces={customPieces()}
+                onDrop={onDrop}
+                getPosition={getPositionObject}
+                orientation={boardOrientation}
+                width={windowMinDimensions * 0.6}
+                darkSquareStyle={{ backgroundColor: '' }}
+                pieces={customPieces()}
+                sparePieces={true}
+                dropOffBoard={'trash'}
+                boardStyle={{
+                    borderRadius: "5px",
+                    boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
+                  }}
             />
         </div>
     );

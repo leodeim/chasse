@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { reverseBoard, selectSessionId, selectHistory, MoveItem, makeMove, historyPop } from '../../state/game/game.slice';
 import { useAppDispatch } from '../../state/hooks';
-import { START_POSITION } from '../../utilities/chess.utility';
+import { START_POSITION, START_POSITION_OBJECT } from '../../utilities/chess.utility';
 import { BackIcon, EndIcon, ReverseIcon } from '../../utilities/icons.utility'
 import { peek2 } from '../../utilities/stack.utility';
 
@@ -24,7 +24,7 @@ export default function Controls() {
 
     let resetBoard = () => {
         let moveItem: MoveItem = {
-            position: START_POSITION,
+            position: START_POSITION_OBJECT,
             sessionId: sessionId
         }
         dispatch(makeMove(moveItem));
