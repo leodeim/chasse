@@ -14,7 +14,8 @@ interface GameState {
     boardOrientation: Orientation,
     windowProperties: WindowProperties,
     sessionId: string,
-    loading: boolean
+    loading: boolean,
+    wsState: boolean
 }
 
 const initialState: GameState = {
@@ -23,7 +24,8 @@ const initialState: GameState = {
     boardOrientation: Orientation.white,
     windowProperties: getWindowProperties(),
     sessionId: 'a88f494f-50f5-475e-98cf-2b0d9e2f05f4',
-    loading: false
+    loading: false,
+    wsState: false
 };
 
 export const gameSlice = createSlice({
@@ -58,6 +60,9 @@ export const gameSlice = createSlice({
         updateWindowProperties(state) {
             state.windowProperties = getWindowProperties();
         },
+        updateWsState(state, action: PayloadAction<boolean>) {
+            state.wsState = action.payload;
+        },
     },
 });
 
@@ -67,6 +72,7 @@ export const {
     updateWindowProperties,
     updatePosition,
     historyPop,
+    updateWsState,
     makeMoveSuccessful } = gameSlice.actions;
 
 export const selectGameFen = (state: RootState) => state.game.gameFen
@@ -75,5 +81,6 @@ export const selectWindowMinDimension = (state: RootState) => state.game.windowP
 export const selectWindowPosition = (state: RootState) => state.game.windowProperties.position;
 export const selectSessionId = (state: RootState) => state.game.sessionId;
 export const selectHistory = (state: RootState) => state.game.history;
+export const selectWsState = (state: RootState) => state.game.wsState;
 
 export default gameSlice.reducer;

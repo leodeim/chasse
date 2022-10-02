@@ -1,49 +1,53 @@
 import Chessboard from "../../lib/Chessboard";
 import { customPieces, Piece, Square } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
-import { makeMove, selectBoardOrientation, selectGameFen, selectSessionId, selectWindowMinDimension } from "../../state/game/game.slice";
+import { makeMove, selectBoardOrientation, selectGameFen, selectSessionId, selectWindowMinDimension, selectWsState, updatePosition } from "../../state/game/game.slice";
 import { SendWebsocketJoinRoom } from "../../socket/socket";
 import { useEffect } from "react";
+import { objectTraps } from "immer/dist/internal";
 
 
-export default function Board(props: any) {
+export default function GameBoard(props: any) {
     const dispatch = useDispatch();
     const game = useSelector(selectGameFen);
     const boardOrientation = useSelector(selectBoardOrientation);
     const windowMinDimensions = useSelector(selectWindowMinDimension);
     const sessionId = useSelector(selectSessionId);
+    const wsState = useSelector(selectWsState)
 
     useEffect(() => {
-        SendWebsocketJoinRoom(sessionId)
+        if (wsState === true) {
+            SendWebsocketJoinRoom(sessionId)
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [wsState]);
 
     function onDrop(obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }) {
-        console.log(obj)
-        // TODO: move logic
+        let newGame = {
+            ...game
+        };
 
-        // if (result != null) {
-        //     dispatch(makeMove({
-        //         position: chess.fen(),
-        //         sessionId: sessionId
-        //     }));
-        // }
+        if (obj.sourceSquare === obj.targetSquare && newGame[obj.targetSquare] === obj.piece) {
+            return true;
+        }
+        if (obj.targetSquare !== 'offBoard') {
+            newGame[obj.targetSquare] = obj.piece;
+        }
+        delete newGame[obj.sourceSquare]
+        
+        dispatch(makeMove({
+            position: newGame,
+            sessionId: sessionId
+        }));
 
         return true;
     }
-
-    function getPositionObject(position: any) {
-        console.log(position)
-    }
-
-    console.log(JSON.stringify(game))
 
     return (
         <div>
             <Chessboard
                 position={game}
                 onDrop={onDrop}
-                getPosition={getPositionObject}
                 orientation={boardOrientation}
                 width={windowMinDimensions * 0.6}
                 darkSquareStyle={{ backgroundColor: '' }}

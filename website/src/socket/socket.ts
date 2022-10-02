@@ -1,7 +1,6 @@
 import { w3cwebsocket } from "websocket";
 
 export const wsClient = new w3cwebsocket('ws://127.0.0.1:8085/ws');
-export let wsState = false;
 
 export enum WebsocketAction {
 	MOVE = 0,
@@ -21,16 +20,6 @@ export type MoveMessage = {
     sessionId: string
 }
 
-wsClient.onopen = () => {
-    console.log('WebSocket Connected');
-    wsState = true;
-};
-
-wsClient.onclose = () => {
-    console.log('WebSocket Disconnected');
-    wsState = false;
-};
-
 export function SendWebsocketMove(data: MoveMessage) {
     console.log("SendWebsocketMove")
     let msg: WebsocketMessage = {
@@ -41,9 +30,9 @@ export function SendWebsocketMove(data: MoveMessage) {
     wsClient.send(JSON.stringify(msg));
 }
 
-export function SendWebsocketJoinRoom(sessionId: string) {
-    if (sessionId === '' || sessionId === undefined || !wsState) {
-        return;
+export function SendWebsocketJoinRoom(sessionId: string): boolean {
+    if (sessionId === '' || sessionId === undefined) {
+        return false;
     }
     console.log("SendWebsocketJoinRoom")
     let msg: WebsocketMessage = {
@@ -51,4 +40,5 @@ export function SendWebsocketJoinRoom(sessionId: string) {
         sessionId: sessionId
     }
     wsClient.send(JSON.stringify(msg));
+    return true;
 }
