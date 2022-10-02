@@ -86,22 +86,22 @@ class Piece extends Component {
     allowDrag: PropTypes.func
   };
 
-  shouldComponentUpdate(nextProps) {
-    const shouldPieceUpdate =
-      nextProps.dropTarget !== null ||
-      nextProps.isDragging ||
-      this.props.isDragging ||
-      // if the position comes from the position prop, check if it is a different position
-      this.props.sourceSquare !== nextProps.sourceSquare ||
-      this.props.waitForTransition !== nextProps.waitForTransition ||
-      // if the screen size changes then update
-      this.props.width !== nextProps.width;
+  // shouldComponentUpdate(nextProps) {
+  //   const shouldPieceUpdate =
+  //     nextProps.dropTarget !== null ||
+  //     nextProps.isDragging ||
+  //     this.props.isDragging ||
+  //     // if the position comes from the position prop, check if it is a different position
+  //     this.props.sourceSquare !== nextProps.sourceSquare ||
+  //     this.props.waitForTransition !== nextProps.waitForTransition ||
+  //     // if the screen size changes then update
+  //     this.props.width !== nextProps.width;
 
-    if (shouldPieceUpdate) {
-      return true;
-    }
-    return false;
-  }
+  //   if (shouldPieceUpdate) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 
   componentDidMount() {
     window.addEventListener('touchstart', this.props.setTouchState);

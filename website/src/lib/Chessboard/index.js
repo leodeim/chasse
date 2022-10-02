@@ -322,14 +322,17 @@ class Chessboard extends Component {
       // Check if currentPosition has a piece occupying the target square
       if (currentPosition[targetSquare]) {
         // Temporarily delete the target square from the new position
-        // delete positionFromProps[targetSquare];
+        let tempPosition = {
+          ...positionFromProps
+        }
+        delete tempPosition[targetSquare];
 
         return {
           sourceSquare,
           targetSquare,
           sourcePiece,
           // Set the current position to the new position minus the targetSquare
-          currentPosition: positionFromProps,
+          currentPosition: tempPosition,
           waitForTransition: squareClicked ? false : true,
           phantomPiece: squareClicked
             ? null
