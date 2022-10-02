@@ -11,7 +11,7 @@ export type Square =
     | 'a3' | 'b3' | 'c3' | 'd3' | 'e3' | 'f3' | 'g3' | 'h3'
     | 'a2' | 'b2' | 'c2' | 'd2' | 'e2' | 'f2' | 'g2' | 'h2'
     | 'a1' | 'b1' | 'c1' | 'd1' | 'e1' | 'f1' | 'g1' | 'h1'
-    | 'offBoard';
+    | 'offBoard' | 'spare';
 
 export function customPieces() {
     const pieces = ['wP', 'wN', 'wB', 'wR', 'wQ', 'wK', 'bP', 'bN', 'bB', 'bR', 'bQ', 'bK'];
@@ -32,13 +32,33 @@ export function customPieces() {
     return returnPieces;
 };
 
+export function calculateMove(obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }, currentPosition: PositionObject): PositionObject | null {
+    if (obj.sourceSquare === obj.targetSquare && currentPosition[obj.targetSquare] === obj.piece) {
+        return null;
+    };
+    if (obj.sourceSquare === 'spare' && obj.targetSquare === 'offBoard') {
+        return null;
+    };
+    
+    let newGamePosition = {
+        ...currentPosition
+    };
+
+    if (obj.targetSquare !== 'offBoard') {
+        newGamePosition[obj.targetSquare] = obj.piece;
+    }
+    delete newGamePosition[obj.sourceSquare];
+
+    return newGamePosition;
+}
+
 export enum Orientation {
     white = "white",
     black = "black",
 }
 
 export type PositionObject = {
-    [key in Square]?: Piece | null;
+    [key in Square]?: Piece;
 };
 
 export const START_POSITION_OBJECT: PositionObject = {

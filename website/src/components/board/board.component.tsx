@@ -1,5 +1,5 @@
 import Chessboard from "../../lib/Chessboard";
-import { customPieces, Piece, Square } from "../../utilities/chess.utility";
+import { calculateMove, customPieces, Piece, Square } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
 import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectWindowMinDimension, selectWsState } from "../../state/game/game.slice";
 import { SendWebsocketJoinRoom } from "../../socket/socket";
@@ -26,16 +26,9 @@ export default function GameBoard(props: any) {
     }, [wsState]);
 
     function onDrop(obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }) {
-        if (obj.sourceSquare !== obj.targetSquare || gamePosition[obj.targetSquare] !== obj.piece) {
-            let newGamePosition = {
-                ...gamePosition
-            };
+        let newGamePosition = calculateMove(obj, gamePosition)
 
-            if (obj.targetSquare !== 'offBoard') {
-                newGamePosition[obj.targetSquare] = obj.piece;
-            }
-            delete newGamePosition[obj.sourceSquare];
-            
+        if (newGamePosition !== null) {
             dispatch(makeMove({
                 position: newGamePosition,
                 sessionId: sessionId
@@ -58,9 +51,11 @@ export default function GameBoard(props: any) {
                 dropOffBoard={'trash'}
                 transitionDuration={200}
                 showNotation={false}
+                dropSquareStyle={{
+                    boxShadow: 'inset 0 0 1px 10px #7E937F'
+                }}
                 boardStyle={{
-                    borderRadius: "5px",
-                    boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
+                    boxShadow: `0 5px 30px rgba(0, 0, 0, 0.5)`
                   }}
             />
         </div>
