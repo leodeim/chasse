@@ -11,12 +11,12 @@ export enum WebsocketAction {
 
 type WebsocketMessage = {
     action: WebsocketAction,
-    fen?: string,
+    position?: string,
     sessionId: string
 }
 
 export type MoveMessage = {
-    fen: string,
+    position: string,
     sessionId: string
 }
 
@@ -24,7 +24,7 @@ export function SendWebsocketMove(data: MoveMessage) {
     console.log("SendWebsocketMove")
     let msg: WebsocketMessage = {
         action: WebsocketAction.MOVE,
-        fen: data.fen,
+        position: data.position,
         sessionId: data.sessionId
     }
     wsClient.send(JSON.stringify(msg));

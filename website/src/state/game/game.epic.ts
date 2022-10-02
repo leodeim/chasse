@@ -7,7 +7,7 @@ import { SendWebsocketMove } from '../../socket/socket'
 const writeMoveToSocket = async (move: MoveItem): Promise<MoveItem> => {
     SendWebsocketMove({
         sessionId: move.sessionId,
-        fen: JSON.stringify(move.position)
+        position: JSON.stringify(move.position)
     })
 
     return move

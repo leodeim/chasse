@@ -322,7 +322,7 @@ class Chessboard extends Component {
       // Check if currentPosition has a piece occupying the target square
       if (currentPosition[targetSquare]) {
         // Temporarily delete the target square from the new position
-        delete positionFromProps[targetSquare];
+        // delete positionFromProps[targetSquare];
 
         return {
           sourceSquare,

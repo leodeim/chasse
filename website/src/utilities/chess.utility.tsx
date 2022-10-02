@@ -37,8 +37,6 @@ export enum Orientation {
     black = "black",
 }
 
-export const START_POSITION = 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1'
-
 export type PositionObject = {
     [key in Square]?: Piece | null;
 };

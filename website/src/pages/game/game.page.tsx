@@ -11,7 +11,7 @@ export default function Game() {
 
     useEffect(() => {
         wsClient.onmessage = (message) => {
-            dispatch(updatePosition(JSON.parse(message.data.toString()).fen))
+            dispatch(updatePosition(JSON.parse(message.data.toString()).position))
         };
         wsClient.onopen = () => {
             console.log('WebSocket Connected');

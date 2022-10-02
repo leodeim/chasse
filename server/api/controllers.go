@@ -51,7 +51,7 @@ func (h *ApiHandler) UpdateSession(c *fiber.Ctx) error {
 		return err
 	}
 
-	session, err := h.store.UpdateSession(session.SessionId, session.Fen)
+	session, err := h.store.UpdateSession(session.SessionId, session.Position)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(err)
 	}

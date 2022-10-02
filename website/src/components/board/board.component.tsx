@@ -1,19 +1,22 @@
 import Chessboard from "../../lib/Chessboard";
 import { customPieces, Piece, Square } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
-import { makeMove, selectBoardOrientation, selectGameFen, selectSessionId, selectWindowMinDimension, selectWsState, updatePosition } from "../../state/game/game.slice";
+import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectWindowMinDimension, selectWsState } from "../../state/game/game.slice";
 import { SendWebsocketJoinRoom } from "../../socket/socket";
 import { useEffect } from "react";
-import { objectTraps } from "immer/dist/internal";
 
 
 export default function GameBoard(props: any) {
     const dispatch = useDispatch();
-    const game = useSelector(selectGameFen);
+    const gamePosition = useSelector(selectGamePosition);
     const boardOrientation = useSelector(selectBoardOrientation);
     const windowMinDimensions = useSelector(selectWindowMinDimension);
     const sessionId = useSelector(selectSessionId);
     const wsState = useSelector(selectWsState)
+
+    let gamePositionCopy = {
+        ...gamePosition
+    };
 
     useEffect(() => {
         if (wsState === true) {
@@ -23,22 +26,21 @@ export default function GameBoard(props: any) {
     }, [wsState]);
 
     function onDrop(obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }) {
-        let newGame = {
-            ...game
-        };
+        if (obj.sourceSquare !== obj.targetSquare || gamePosition[obj.targetSquare] !== obj.piece) {
+            let newGamePosition = {
+                ...gamePosition
+            };
 
-        if (obj.sourceSquare === obj.targetSquare && newGame[obj.targetSquare] === obj.piece) {
-            return true;
+            if (obj.targetSquare !== 'offBoard') {
+                newGamePosition[obj.targetSquare] = obj.piece;
+            }
+            delete newGamePosition[obj.sourceSquare];
+            
+            dispatch(makeMove({
+                position: newGamePosition,
+                sessionId: sessionId
+            }));
         }
-        if (obj.targetSquare !== 'offBoard') {
-            newGame[obj.targetSquare] = obj.piece;
-        }
-        delete newGame[obj.sourceSquare]
-        
-        dispatch(makeMove({
-            position: newGame,
-            sessionId: sessionId
-        }));
 
         return true;
     }
@@ -46,7 +48,7 @@ export default function GameBoard(props: any) {
     return (
         <div>
             <Chessboard
-                position={game}
+                position={gamePositionCopy}
                 onDrop={onDrop}
                 orientation={boardOrientation}
                 width={windowMinDimensions * 0.6}
@@ -54,6 +56,8 @@ export default function GameBoard(props: any) {
                 pieces={customPieces()}
                 sparePieces={true}
                 dropOffBoard={'trash'}
+                transitionDuration={200}
+                showNotation={false}
                 boardStyle={{
                     borderRadius: "5px",
                     boxShadow: `0 5px 15px rgba(0, 0, 0, 0.5)`
