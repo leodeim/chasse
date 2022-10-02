@@ -4,7 +4,7 @@ import Menu from "../../components/menu/menu.component";
 
 export default function Game() {
     return (
-        <div>
+        <div className="sm:flex sm:flex-row">
             <div className="flex justify-center">
                 <Menu />
             </div>
