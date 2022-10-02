@@ -3,13 +3,25 @@ import Home from './pages/home/home.page';
 import Game from './pages/game/game.page';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { updateWindowProperties } from './state/game/game.slice';
+import { updatePosition, updateWindowProperties, updateWsState } from './state/game/game.slice';
 import './socket/socket'
+import { wsClient } from "./socket/socket";
 
 export default function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
+        wsClient.onmessage = (message) => {
+            dispatch(updatePosition(JSON.parse(message.data.toString()).position))
+        };
+        wsClient.onopen = () => {
+            console.log('WebSocket Connected');
+            dispatch(updateWsState(true));
+        };
+        wsClient.onclose = () => {
+            console.log('WebSocket Disconnected');
+            dispatch(updateWsState(false));
+        };
         function handleResize() {
             dispatch(updateWindowProperties());
         }
