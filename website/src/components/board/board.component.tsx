@@ -44,7 +44,7 @@ export default function GameBoard(props: any) {
                 position={gamePositionCopy}
                 onDrop={onDrop}
                 orientation={boardOrientation}
-                width={windowMinDimensions * 0.6}
+                width={windowMinDimensions * 0.8}
                 darkSquareStyle={{ backgroundColor: '' }}
                 pieces={customPieces()}
                 sparePieces={true}
