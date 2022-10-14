@@ -35,7 +35,12 @@ export const gameSlice = createSlice({
     reducers: {
         makeMove(state, action: PayloadAction<MoveItem>) {
             state.loading = true;
-            state.gamePosition = action.payload.position;
+            let obj = action.payload.position;
+            let lastObj = peek(state.history);
+            state.gamePosition = obj;
+            if (!isEqual(obj, lastObj)) {
+                state.history = push(state.history, obj)
+            }
         },
         makeMoveSuccessful(state, _: PayloadAction<MoveItem>) {
             state.loading = false;

@@ -8,29 +8,39 @@ import (
 type WebsocketAction int
 
 const (
-	MOVE      WebsocketAction = 0
-	GO_BACK   WebsocketAction = 1
-	RESET     WebsocketAction = 2
-	JOIN_ROOM WebsocketAction = 3
-	ERROR     WebsocketAction = 4
-	OK        WebsocketAction = 5
+	BLANK_ACTION WebsocketAction = 0
+	MOVE         WebsocketAction = 1
+	GO_BACK      WebsocketAction = 2
+	RESET        WebsocketAction = 3
+	JOIN_ROOM    WebsocketAction = 4
+)
+
+type WebsocketResponse int
+
+const (
+	BLANK_RESPONSE WebsocketResponse = 0
+	OK             WebsocketResponse = 1
+	ERROR          WebsocketResponse = 2
 )
 
 type SessionActionMessage struct {
-	Action    WebsocketAction `json:"action"`
-	SessionId string          `json:"sessionId"`
-	Position  string          `json:"position"`
+	Action    WebsocketAction   `json:"action"`
+	Response  WebsocketResponse `json:"response"`
+	SessionId string            `json:"sessionId"`
+	Position  string            `json:"position"`
 }
 
-func ErrorMessage() SessionActionMessage {
+func ErrorMessage(action WebsocketAction) SessionActionMessage {
 	return SessionActionMessage{
-		Action: ERROR,
+		Action:   action,
+		Response: ERROR,
 	}
 }
 
-func OkMessage() SessionActionMessage {
+func OkMessage(action WebsocketAction) SessionActionMessage {
 	return SessionActionMessage{
-		Action: OK,
+		Action:   action,
+		Response: OK,
 	}
 }
 

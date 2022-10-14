@@ -1,33 +1,35 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from './pages/home/home.page';
 import Game from './pages/game/game.page';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updatePosition, updateWindowProperties, updateWsState } from './state/game/game.slice';
 import './socket/socket'
-import { WebsocketAction, WebsocketMessage, wsClient } from "./socket/socket";
+import { WebsocketAction, WebsocketMessage, WebsocketResponse, wsClient } from "./socket/socket";
 
 export default function App() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         wsClient.onmessage = (message) => {
-            let msg : WebsocketMessage = JSON.parse(message.data.toString())
-            switch (msg.action) {
-                case WebsocketAction.MOVE:
-                    if (msg.position !== undefined) {
+            let msg: WebsocketMessage = JSON.parse(message.data.toString())
+            switch (msg.response) {
+                case WebsocketResponse.BLANK:
+                    if (msg.action === WebsocketAction.MOVE && msg.position !== undefined) {
                         console.log('WS - move received');
                         dispatch(updatePosition(msg.position))
                     }
                     break
-                case WebsocketAction.ERROR:
+                case WebsocketResponse.ERROR:
                     console.log('WS respond: ERROR');
+                    if (msg.action === WebsocketAction.JOIN_ROOM) {
+                        navigate("/")
+                    }
                     break
-                case WebsocketAction.OK:
+                case WebsocketResponse.OK:
                     console.log('WS respond: OK');
                     break
-                default:
-                    console.log('WS - bad message received');
             }
         };
         wsClient.onopen = () => {

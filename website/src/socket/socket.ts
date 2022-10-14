@@ -3,16 +3,22 @@ import { w3cwebsocket } from "websocket";
 export const wsClient = new w3cwebsocket('ws://127.0.0.1:8085/ws');
 
 export enum WebsocketAction {
-	MOVE = 0,
-	GO_BACK = 1,
-	RESET = 2,
-    JOIN_ROOM = 3,
-    ERROR = 4,
-    OK = 5,
+    BLANK = 0,
+    MOVE = 1,
+	GO_BACK = 2,
+	RESET = 3,
+    JOIN_ROOM = 4,
+}
+
+export enum WebsocketResponse {
+    BLANK = 0,
+    OK = 1,
+    ERROR = 2,
 }
 
 export type WebsocketMessage = {
     action: WebsocketAction,
+    response?: WebsocketResponse,
     position?: string,
     sessionId: string
 }
