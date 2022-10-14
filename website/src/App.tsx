@@ -1,25 +1,43 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import Home from './pages/home/home.page';
 import Game from './pages/game/game.page';
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updatePosition, updateWindowProperties, updateWsState } from './state/game/game.slice';
 import './socket/socket'
-import { wsClient } from "./socket/socket";
+import { WebsocketAction, WebsocketMessage, WebsocketResponse, wsClient } from "./socket/socket";
 
 export default function App() {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
         wsClient.onmessage = (message) => {
-            dispatch(updatePosition(JSON.parse(message.data.toString()).position))
+            let msg: WebsocketMessage = JSON.parse(message.data.toString())
+            switch (msg.response) {
+                case WebsocketResponse.BLANK:
+                    if (msg.action === WebsocketAction.MOVE && msg.position !== undefined) {
+                        console.log('WS - move received');
+                        dispatch(updatePosition(msg.position))
+                    }
+                    break
+                case WebsocketResponse.ERROR:
+                    console.log('WS respond: ERROR');
+                    if (msg.action === WebsocketAction.JOIN_ROOM) {
+                        navigate("/")
+                    }
+                    break
+                case WebsocketResponse.OK:
+                    console.log('WS respond: OK');
+                    break
+            }
         };
         wsClient.onopen = () => {
-            console.log('WebSocket Connected');
+            console.log('WS connected');
             dispatch(updateWsState(true));
         };
         wsClient.onclose = () => {
-            console.log('WebSocket Disconnected');
+            console.log('WS disconnected');
             dispatch(updateWsState(false));
         };
         function handleResize() {
@@ -35,6 +53,7 @@ export default function App() {
         <div className="flex flex-col items-center justify-center bg-green min-h-screen text-lg text-white">
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="board/" element={<Home />} />
                 <Route path="board/:sessionId" element={<Game />} />
             </Routes>
         </div>

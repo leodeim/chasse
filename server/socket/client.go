@@ -25,6 +25,16 @@ func serveClient(app *fiber.App, store *store.Store) {
 			c.Close()
 		}()
 
+		respondOk := func(action models.WebsocketAction) {
+			msg := models.OkMessage(action)
+			client.conn.WriteMessage(websocket.TextMessage, msg.Encode())
+		}
+		respondError := func(action models.WebsocketAction, err error) {
+			errorMsg := models.ErrorMessage(action)
+			client.conn.WriteMessage(websocket.TextMessage, errorMsg.Encode())
+			log.Printf("(Client %s) Error: %s \n", client.conn.LocalAddr(), err.Error())
+		}
+
 		for {
 			messageType, rawMessage, err := c.ReadMessage()
 			if err != nil {
@@ -34,11 +44,19 @@ func serveClient(app *fiber.App, store *store.Store) {
 
 			if messageType == websocket.TextMessage {
 				message := &models.SessionActionMessage{}
-				if err := json.Unmarshal(rawMessage, &message); err == nil {
-					GameAction(*message, client, store)
-				} else {
-					log.Printf("(Client %s) Cant decode WebSocket message \n", client.conn.LocalAddr())
+
+				if err := json.Unmarshal(rawMessage, &message); err != nil {
+					respondError(models.BLANK_ACTION, err)
+					continue
 				}
+
+				if err := GameAction(*message, client, store); err != nil {
+					respondError(message.Action, err)
+					continue
+				} else {
+					respondOk(message.Action)
+				}
+
 			} else {
 				log.Printf("(Client %s) WebSocket message received of type: %d \n", client.conn.LocalAddr(), messageType)
 			}
