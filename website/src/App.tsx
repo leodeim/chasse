@@ -5,21 +5,37 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updatePosition, updateWindowProperties, updateWsState } from './state/game/game.slice';
 import './socket/socket'
-import { wsClient } from "./socket/socket";
+import { WebsocketAction, WebsocketMessage, wsClient } from "./socket/socket";
 
 export default function App() {
     const dispatch = useDispatch();
 
     useEffect(() => {
         wsClient.onmessage = (message) => {
-            dispatch(updatePosition(JSON.parse(message.data.toString()).position))
+            let msg : WebsocketMessage = JSON.parse(message.data.toString())
+            switch (msg.action) {
+                case WebsocketAction.MOVE:
+                    if (msg.position !== undefined) {
+                        console.log('WS - move received');
+                        dispatch(updatePosition(msg.position))
+                    }
+                    break
+                case WebsocketAction.ERROR:
+                    console.log('WS respond: ERROR');
+                    break
+                case WebsocketAction.OK:
+                    console.log('WS respond: OK');
+                    break
+                default:
+                    console.log('WS - bad message received');
+            }
         };
         wsClient.onopen = () => {
-            console.log('WebSocket Connected');
+            console.log('WS connected');
             dispatch(updateWsState(true));
         };
         wsClient.onclose = () => {
-            console.log('WebSocket Disconnected');
+            console.log('WS disconnected');
             dispatch(updateWsState(false));
         };
         function handleResize() {
@@ -35,6 +51,7 @@ export default function App() {
         <div className="flex flex-col items-center justify-center bg-green min-h-screen text-lg text-white">
             <Routes>
                 <Route path="/" element={<Home />} />
+                <Route path="board/" element={<Home />} />
                 <Route path="board/:sessionId" element={<Game />} />
             </Routes>
         </div>

@@ -12,12 +12,26 @@ const (
 	GO_BACK   WebsocketAction = 1
 	RESET     WebsocketAction = 2
 	JOIN_ROOM WebsocketAction = 3
+	ERROR     WebsocketAction = 4
+	OK        WebsocketAction = 5
 )
 
 type SessionActionMessage struct {
 	Action    WebsocketAction `json:"action"`
 	SessionId string          `json:"sessionId"`
 	Position  string          `json:"position"`
+}
+
+func ErrorMessage() SessionActionMessage {
+	return SessionActionMessage{
+		Action: ERROR,
+	}
+}
+
+func OkMessage() SessionActionMessage {
+	return SessionActionMessage{
+		Action: OK,
+	}
 }
 
 func (message *SessionActionMessage) Encode() []byte {

@@ -6,10 +6,12 @@ export enum WebsocketAction {
 	MOVE = 0,
 	GO_BACK = 1,
 	RESET = 2,
-	JOIN_ROOM = 3
+    JOIN_ROOM = 3,
+    ERROR = 4,
+    OK = 5,
 }
 
-type WebsocketMessage = {
+export type WebsocketMessage = {
     action: WebsocketAction,
     position?: string,
     sessionId: string
@@ -21,7 +23,7 @@ export type MoveMessage = {
 }
 
 export function SendWebsocketMove(data: MoveMessage) {
-    console.log("SendWebsocketMove")
+    console.log("WS move sent")
     let msg: WebsocketMessage = {
         action: WebsocketAction.MOVE,
         position: data.position,
@@ -34,7 +36,7 @@ export function SendWebsocketJoinRoom(sessionId: string): boolean {
     if (sessionId === '' || sessionId === undefined) {
         return false;
     }
-    console.log("SendWebsocketJoinRoom")
+    console.log("WS join room sent")
     let msg: WebsocketMessage = {
         action: WebsocketAction.JOIN_ROOM,
         sessionId: sessionId

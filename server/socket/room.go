@@ -13,7 +13,12 @@ type Room struct {
 	clients    map[*Client]bool
 	register   chan *Client
 	unregister chan *Client
-	broadcast  chan *models.SessionActionMessage
+	broadcast  chan *BroadcastData
+}
+
+type BroadcastData struct {
+	message *models.SessionActionMessage
+	client  *Client
 }
 
 var activeRooms = make(map[string]*Room)
@@ -27,7 +32,7 @@ func FindOrCreateRoom(id string) *Room {
 			clients:    make(map[*Client]bool),
 			register:   make(chan *Client),
 			unregister: make(chan *Client),
-			broadcast:  make(chan *models.SessionActionMessage),
+			broadcast:  make(chan *BroadcastData),
 		}
 
 		go room.run()
@@ -65,11 +70,14 @@ func (room *Room) run() {
 			room.clients[client] = true
 			log.Printf("(Room %s) Client registered, clients in the room: %d \n", room.SessionId, len(room.clients))
 
-		case message := <-room.broadcast:
-			log.Printf("(Room %s) Message will be sent: %+v\n", room.SessionId, message)
+		case data := <-room.broadcast:
+			// log.Printf("(Room %s) Message will be sent: %+v\n", room.SessionId, message)
 
 			for client := range room.clients {
-				if err := client.conn.WriteMessage(websocket.TextMessage, message.Encode()); err != nil {
+				if client == data.client {
+					continue
+				}
+				if err := client.conn.WriteMessage(websocket.TextMessage, data.message.Encode()); err != nil {
 					log.Printf("(Room %s) WebSocket write error: %v", room.SessionId, err)
 
 					client.conn.WriteMessage(websocket.CloseMessage, []byte{})
