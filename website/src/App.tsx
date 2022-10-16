@@ -28,13 +28,14 @@ export default function App() {
                     }
                     break
                 case WebsocketResponse.OK:
+                    if (msg.action === WebsocketAction.CONNECT) {
+                        dispatch(updateWsState(true));
+                        console.log('WS connection successful');
+                        break
+                    }
                     console.log('WS respond: OK');
                     break
             }
-        };
-        wsClient.onopen = () => {
-            console.log('WS connected');
-            dispatch(updateWsState(true));
         };
         wsClient.onclose = () => {
             console.log('WS disconnected');
@@ -50,7 +51,7 @@ export default function App() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center bg-green min-h-screen text-lg text-white">
+        <div className="flex flex-col items-center justify-center bg-cGreen min-h-screen text-lg text-white">
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="board/" element={<Home />} />

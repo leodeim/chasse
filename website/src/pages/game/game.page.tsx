@@ -3,26 +3,26 @@ import Controls from "../../components/controls/controls.component";
 import Menu from "../../components/menu/menu.component";
 import { SendWebsocketJoinRoom } from "../../socket/socket";
 import { useEffect } from "react";
-import { selectWsState } from "../../state/game/game.slice";
-import { useSelector } from "react-redux";
+import { selectWsState, updateSessionId } from "../../state/game/game.slice";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
+import { storeSession } from "../../utilities/storage.utility";
 
 
 export default function Game() {
     const navigate = useNavigate();
     let { sessionId } = useParams();
-    const wsState = useSelector(selectWsState)
+    const wsState = useSelector(selectWsState);
+    const dispatch = useDispatch();
 
     useEffect(() => {
-        console.log(wsState === true)
-        console.log(sessionId !== undefined)
-        console.log(wsState === true && sessionId !== undefined)
-
         if (sessionId === undefined) {
             navigate("/");
         }
         if (wsState === true && sessionId !== undefined) {
+            dispatch(updateSessionId(sessionId))
             SendWebsocketJoinRoom(sessionId)
+            storeSession(sessionId)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wsState]);

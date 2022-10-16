@@ -16,7 +16,7 @@ type Client struct {
 }
 
 func serveClient(app *fiber.App, store *store.Store) {
-	app.Get("/ws", websocket.New(func(c *websocket.Conn) {
+	app.Get("/api/ws", websocket.New(func(c *websocket.Conn) {
 		client := &Client{conn: c}
 		log.Printf("(Client %s) Logged in\n", client.conn.LocalAddr())
 
@@ -35,6 +35,7 @@ func serveClient(app *fiber.App, store *store.Store) {
 			log.Printf("(Client %s) Error: %s \n", client.conn.LocalAddr(), err.Error())
 		}
 
+		respondOk(models.CONNECT)
 		for {
 			messageType, rawMessage, err := c.ReadMessage()
 			if err != nil {
@@ -53,8 +54,6 @@ func serveClient(app *fiber.App, store *store.Store) {
 				if err := GameAction(*message, client, store); err != nil {
 					respondError(message.Action, err)
 					continue
-				} else {
-					respondOk(message.Action)
 				}
 
 			} else {

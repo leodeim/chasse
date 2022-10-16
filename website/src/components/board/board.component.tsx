@@ -46,7 +46,7 @@ export default function GameBoard(props: any) {
                     boxShadow: 'inset 0 0 1px 10px #7E937F'
                 }}
                 boardStyle={{
-                    boxShadow: `0 5px 30px rgba(0, 0, 0, 0.5)`
+                    boxShadow: '0 5px 30px rgba(0, 0, 0, 0.5)'
                   }}
             />
         </div>
