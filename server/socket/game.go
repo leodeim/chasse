@@ -46,9 +46,12 @@ func JoinRoom(data models.SessionActionMessage, client *Client, store *store.Sto
 	}
 
 	// verify if session is registered
-	if _, err := store.GetSession(data.SessionId); err == nil {
+	if session, err := store.GetSession(data.SessionId); err == nil {
 		room := FindOrCreateRoom(data.SessionId)
-		room.register <- client
+		room.register <- &BroadcastData{
+			message: session,
+			client:  client,
+		}
 	} else {
 		return errors.New("error while retrieving session info")
 	}

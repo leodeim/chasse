@@ -24,7 +24,7 @@ const initialState: GameState = {
     history: [START_POSITION_OBJECT],
     boardOrientation: Orientation.white,
     windowProperties: getWindowProperties(),
-    sessionId: 'a88f494f-50f5-475e-98cf-2b0d9e2f05f4',
+    sessionId: '',
     loading: false,
     wsState: false
 };
@@ -66,6 +66,9 @@ export const gameSlice = createSlice({
         updateWsState(state, action: PayloadAction<boolean>) {
             state.wsState = action.payload;
         },
+        updateSessionId(state, action: PayloadAction<string>) {
+            state.sessionId = action.payload;
+        },
     },
 });
 
@@ -76,7 +79,8 @@ export const {
     updatePosition,
     historyPop,
     updateWsState,
-    makeMoveSuccessful } = gameSlice.actions;
+    makeMoveSuccessful,
+    updateSessionId} = gameSlice.actions;
 
 export const selectGamePosition = (state: RootState) => state.game.gamePosition
 export const selectBoardOrientation = (state: RootState) => state.game.boardOrientation;

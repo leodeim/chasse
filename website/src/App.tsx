@@ -14,6 +14,7 @@ export default function App() {
     useEffect(() => {
         wsClient.onmessage = (message) => {
             let msg: WebsocketMessage = JSON.parse(message.data.toString())
+            console.log(msg)
             switch (msg.response) {
                 case WebsocketResponse.BLANK:
                     if (msg.action === WebsocketAction.MOVE && msg.position !== undefined) {

@@ -25,10 +25,10 @@ func serveClient(app *fiber.App, store *store.Store) {
 			c.Close()
 		}()
 
-		respondOk := func(action models.WebsocketAction) {
-			msg := models.OkMessage(action)
-			client.conn.WriteMessage(websocket.TextMessage, msg.Encode())
-		}
+		// respondOk := func(action models.WebsocketAction) {
+		// 	msg := models.OkMessage(action)
+		// 	client.conn.WriteMessage(websocket.TextMessage, msg.Encode())
+		// }
 		respondError := func(action models.WebsocketAction, err error) {
 			errorMsg := models.ErrorMessage(action)
 			client.conn.WriteMessage(websocket.TextMessage, errorMsg.Encode())
@@ -53,8 +53,6 @@ func serveClient(app *fiber.App, store *store.Store) {
 				if err := GameAction(*message, client, store); err != nil {
 					respondError(message.Action, err)
 					continue
-				} else {
-					respondOk(message.Action)
 				}
 
 			} else {

@@ -11,7 +11,7 @@ import (
 type Room struct {
 	SessionId  string `json:"id"`
 	clients    map[*Client]bool
-	register   chan *Client
+	register   chan *BroadcastData
 	unregister chan *Client
 	broadcast  chan *BroadcastData
 }
@@ -30,7 +30,7 @@ func FindOrCreateRoom(id string) *Room {
 		room = &Room{
 			SessionId:  id,
 			clients:    make(map[*Client]bool),
-			register:   make(chan *Client),
+			register:   make(chan *BroadcastData),
 			unregister: make(chan *Client),
 			broadcast:  make(chan *BroadcastData),
 		}
@@ -65,10 +65,17 @@ func (room *Room) run() {
 
 	for {
 		select {
-		case client := <-room.register:
-			client.sessionId = room.SessionId
-			room.clients[client] = true
-			log.Printf("(Room %s) Client registered, clients in the room: %d \n", room.SessionId, len(room.clients))
+		case data := <-room.register:
+			message := models.SessionActionMessage{
+				Action:    models.MOVE,
+				SessionId: data.message.SessionId,
+				Position:  data.message.Position,
+			}
+			if err := data.client.conn.WriteMessage(websocket.TextMessage, message.Encode()); err == nil {
+				data.client.sessionId = room.SessionId
+				room.clients[data.client] = true
+				log.Printf("(Room %s) Client registered, clients in the room: %d \n", room.SessionId, len(room.clients))
+			}
 
 		case data := <-room.broadcast:
 			// log.Printf("(Room %s) Message will be sent: %+v\n", room.SessionId, message)
