@@ -193,7 +193,7 @@ class Chessboard extends Component {
     lightSquareStyle: { backgroundColor: 'rgb(240, 217, 181)' },
     darkSquareStyle: { backgroundColor: 'rgb(181, 136, 99)' },
     squareStyles: {},
-    dropSquareStyle: { boxShadow: 'inset 0 0 1px 4px yellow' },
+    dropSquareStyle: { boxShadow: 'inset 0 0 1px 4px cYellow' },
     calcWidth: () => {},
     roughSquare: () => {},
     onMouseOverSquare: () => {},

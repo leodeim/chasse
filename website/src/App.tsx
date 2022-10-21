@@ -51,7 +51,7 @@ export default function App() {
     }, []);
 
     return (
-        <div className="flex flex-col items-center justify-center bg-green min-h-screen text-lg text-white">
+        <div className="flex flex-col items-center justify-center bg-cGreen min-h-screen text-lg text-white">
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="board/" element={<Home />} />

@@ -7,6 +7,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getRecentSession } from '../../utilities/storage.utility';
+import './style.css';
 
 export default function Home() {
     const windowMinDimensions = useSelector(selectWindowMinDimension);
@@ -27,12 +28,12 @@ export default function Home() {
     return (
         <div style={{ boxShadow: '0 5px 30px rgba(0, 0, 0, 0.5)' }}>
             <div className='flex flex-row'>
-                <div style={squareStyle} className='bg-yellow text-darkDarkGreen text-xs sm:text-lg flex flex-col items-center justify-center break-words text-center select-none'>
+                <div style={squareStyle} className='bg-cYellow text-cDarkGreen text-3xl sm:text-4xl md:text-5xl lg:text-6xl flex flex-col items-center justify-center break-words text-center select-none title'>
                     <p>
                         CHESSBOARD
                     </p>
                 </div>
-                <div style={squareStyle} className='inner-shadow text-yellow font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
+                <div style={squareStyle} className='inner-shadow text-cYellow font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl flex flex-col items-center justify-center break-words text-center select-none'>
                     <FaChess />
                 </div>
             </div>
@@ -69,7 +70,7 @@ function CreateSessionSquare(props) {
     }
 
     return (
-        <div onClick={() => createSession()} style={props.style} className='bg-yellow hover:bg-darkYellow inner-shadow cursor-pointer text-darkDarkGreen font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
+        <div onClick={() => createSession()} style={props.style} className='bg-cYellow hover:bg-cDarkYellow inner-shadow cursor-pointer text-cDarkGreen font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
             <p className="pb-1">
                 NEW BOARD
             </p>
@@ -84,11 +85,11 @@ function RecentSessionSquare(props) {
     }
 
     return (
-        <div onClick={() => openSession()} style={props.style} className='hover:bg-darkGreen inner-shadow cursor-pointer text-yellow font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
-            <MdOutlineOpenInNew className="mb-1" />
-            <p>
+        <div onClick={() => openSession()} style={props.style} className='hover:bg-cDarkGreen inner-shadow cursor-pointer text-cYellow font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
+            <p className="pb-1">
                 OPEN LAST BOARD
             </p>
+            <MdOutlineOpenInNew />
         </div>
     )
 }
