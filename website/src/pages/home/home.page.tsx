@@ -25,7 +25,6 @@ export default function Home() {
         axios
             .get("http://localhost:8085/api/v1/session/new")
             .then((response: any) => {
-                console.log(response)
                 navigate("/board/" + response.data.sessionId)
             })
             .catch((err) => console.log(err));

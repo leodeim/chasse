@@ -25,16 +25,17 @@ func serveClient(app *fiber.App, store *store.Store) {
 			c.Close()
 		}()
 
-		// respondOk := func(action models.WebsocketAction) {
-		// 	msg := models.OkMessage(action)
-		// 	client.conn.WriteMessage(websocket.TextMessage, msg.Encode())
-		// }
+		respondOk := func(action models.WebsocketAction) {
+			msg := models.OkMessage(action)
+			client.conn.WriteMessage(websocket.TextMessage, msg.Encode())
+		}
 		respondError := func(action models.WebsocketAction, err error) {
 			errorMsg := models.ErrorMessage(action)
 			client.conn.WriteMessage(websocket.TextMessage, errorMsg.Encode())
 			log.Printf("(Client %s) Error: %s \n", client.conn.LocalAddr(), err.Error())
 		}
 
+		respondOk(models.CONNECT)
 		for {
 			messageType, rawMessage, err := c.ReadMessage()
 			if err != nil {

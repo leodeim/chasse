@@ -8,6 +8,7 @@ export enum WebsocketAction {
 	GO_BACK = 2,
 	RESET = 3,
     JOIN_ROOM = 4,
+    CONNECT = 5,
 }
 
 export enum WebsocketResponse {

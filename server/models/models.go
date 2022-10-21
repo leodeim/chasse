@@ -13,6 +13,7 @@ const (
 	GO_BACK      WebsocketAction = 2
 	RESET        WebsocketAction = 3
 	JOIN_ROOM    WebsocketAction = 4
+	CONNECT      WebsocketAction = 5
 )
 
 type WebsocketResponse int

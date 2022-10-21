@@ -14,7 +14,6 @@ export default function App() {
     useEffect(() => {
         wsClient.onmessage = (message) => {
             let msg: WebsocketMessage = JSON.parse(message.data.toString())
-            console.log(msg)
             switch (msg.response) {
                 case WebsocketResponse.BLANK:
                     if (msg.action === WebsocketAction.MOVE && msg.position !== undefined) {
@@ -29,13 +28,14 @@ export default function App() {
                     }
                     break
                 case WebsocketResponse.OK:
+                    if (msg.action === WebsocketAction.CONNECT) {
+                        dispatch(updateWsState(true));
+                        console.log('WS connection successful');
+                        break
+                    }
                     console.log('WS respond: OK');
                     break
             }
-        };
-        wsClient.onopen = () => {
-            console.log('WS connected');
-            dispatch(updateWsState(true));
         };
         wsClient.onclose = () => {
             console.log('WS disconnected');
