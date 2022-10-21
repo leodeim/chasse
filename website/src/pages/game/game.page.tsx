@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import { selectWsState, updateSessionId } from "../../state/game/game.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
+import { storeSession } from "../../utilities/storage.utility";
 
 
 export default function Game() {
@@ -21,6 +22,7 @@ export default function Game() {
         if (wsState === true && sessionId !== undefined) {
             dispatch(updateSessionId(sessionId))
             SendWebsocketJoinRoom(sessionId)
+            storeSession(sessionId)
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wsState]);
