@@ -1,6 +1,7 @@
 # Online chessboard
 
 Just a simple chessboard - without timers, rules etc. Play just like you do it OTB.
+
 <http://www.chessboard.tech/>
 
 ## Build an API
