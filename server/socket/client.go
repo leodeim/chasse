@@ -16,7 +16,7 @@ type Client struct {
 }
 
 func serveClient(app *fiber.App, store *store.Store) {
-	app.Get("/ws", websocket.New(func(c *websocket.Conn) {
+	app.Get("/api/ws", websocket.New(func(c *websocket.Conn) {
 		client := &Client{conn: c}
 		log.Printf("(Client %s) Logged in\n", client.conn.LocalAddr())
 

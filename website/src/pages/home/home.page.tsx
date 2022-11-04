@@ -28,12 +28,12 @@ export default function Home() {
     return (
         <div style={{ boxShadow: '0 5px 30px rgba(0, 0, 0, 0.5)' }}>
             <div className='flex flex-row'>
-                <div style={squareStyle} className='bg-cYellow text-cDarkGreen text-3xl sm:text-4xl md:text-5xl lg:text-6xl flex flex-col items-center justify-center break-words text-center select-none title'>
+                <div style={squareStyle} className='bg-cYellow text-cDarkGreen text-2xl sm:text-3xl md:text-4xl lg:text-5xl flex flex-col items-center justify-center break-words text-center select-none title'>
                     <p>
                         CHESSBOARD
                     </p>
                 </div>
-                <div style={squareStyle} className='inner-shadow text-cYellow font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl flex flex-col items-center justify-center break-words text-center select-none'>
+                <div style={squareStyle} className='inner-shadow text-cYellow font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl flex flex-col items-center justify-center break-words text-center select-none'>
                     <FaChess />
                 </div>
             </div>
@@ -62,7 +62,7 @@ export default function Home() {
 function CreateSessionSquare(props) {
     let createSession = () => {
         axios
-            .get("http://localhost:8085/api/v1/session/new")
+            .get("http://chessboard.tech/api/v1/session/new")
             .then((response: any) => {
                 props.navigate("/board/" + response.data.sessionId)
             })

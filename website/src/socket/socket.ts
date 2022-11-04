@@ -1,6 +1,6 @@
 import { w3cwebsocket } from "websocket";
 
-export const wsClient = new w3cwebsocket('ws://127.0.0.1:8085/ws');
+export const wsClient = new w3cwebsocket('ws://chessboard.tech/api/ws');
 
 export enum WebsocketAction {
     BLANK = 0,
