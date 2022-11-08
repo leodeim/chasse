@@ -13,7 +13,7 @@ class CustomDragLayer extends Component {
     }),
     isDragging: PropTypes.bool.isRequired,
     width: PropTypes.number,
-    pieces: PropTypes.object,
+    pieces: PropTypes.array,
     id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     wasPieceTouched: PropTypes.bool,
     sourceSquare: PropTypes.string

@@ -19,7 +19,7 @@ func (s *Store) UpdateSession(uuid string, position string) (*models.SessionActi
 		return nil, err
 	}
 
-	if err := s.db.Set("ses:"+uuid, positionString, 2*time.Hour).Err(); err != nil {
+	if err := s.db.Set("ses:"+uuid, positionString, 24*time.Hour).Err(); err != nil {
 		return nil, err
 	}
 
