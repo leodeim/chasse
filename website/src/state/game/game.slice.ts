@@ -14,6 +14,7 @@ interface GameState {
     history: PositionObject[],
     boardOrientation: Orientation,
     windowProperties: WindowProperties,
+    tabletMode: boolean,
     sessionId: string,
     loading: boolean,
     wsState: boolean
@@ -24,6 +25,7 @@ const initialState: GameState = {
     history: [START_POSITION_OBJECT],
     boardOrientation: Orientation.white,
     windowProperties: getWindowProperties(),
+    tabletMode: false,
     sessionId: '',
     loading: false,
     wsState: false
@@ -69,6 +71,9 @@ export const gameSlice = createSlice({
         updateSessionId(state, action: PayloadAction<string>) {
             state.sessionId = action.payload;
         },
+        toggleTabletMode(state) {
+            state.tabletMode = !state.tabletMode;
+        },
     },
 });
 
@@ -78,6 +83,7 @@ export const {
     updateWindowProperties,
     updatePosition,
     historyPop,
+    toggleTabletMode,
     updateWsState,
     makeMoveSuccessful,
     updateSessionId} = gameSlice.actions;
@@ -89,5 +95,6 @@ export const selectWindowPosition = (state: RootState) => state.game.windowPrope
 export const selectSessionId = (state: RootState) => state.game.sessionId;
 export const selectHistory = (state: RootState) => state.game.history;
 export const selectWsState = (state: RootState) => state.game.wsState;
+export const selectTabletMode = (state: RootState) => state.game.tabletMode;
 
 export default gameSlice.reducer;

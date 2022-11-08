@@ -1,8 +1,8 @@
 import { useSelector } from 'react-redux';
-import { reverseBoard, selectSessionId, selectHistory, MoveItem, makeMove, historyPop } from '../../state/game/game.slice';
+import { reverseBoard, selectSessionId, selectHistory, MoveItem, makeMove, historyPop, toggleTabletMode } from '../../state/game/game.slice';
 import { useAppDispatch } from '../../state/hooks';
 import { START_POSITION_OBJECT } from '../../utilities/chess.utility';
-import { BackIcon, EndIcon, ReverseIcon, StartIcon } from '../../utilities/icons.utility'
+import { BackIcon, EndIcon, ReverseIcon, StartIcon, TabletModeIcon } from '../../utilities/icons.utility'
 import { peek2 } from '../../utilities/stack.utility';
 
 export default function Controls() {
@@ -46,6 +46,9 @@ export default function Controls() {
                 </button>
                 <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2" onClick={() => dispatch(reverseBoard())}>
                     <ReverseIcon />
+                </button>
+                <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2" onClick={() => dispatch(toggleTabletMode())}>
+                    <TabletModeIcon />
                 </button>
                 <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2 text-cBlue" onClick={() => resetBoard()}>
                     <StartIcon />

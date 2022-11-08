@@ -13,22 +13,70 @@ export type Square =
     | 'a1' | 'b1' | 'c1' | 'd1' | 'e1' | 'f1' | 'g1' | 'h1'
     | 'offBoard' | 'spare';
 
-export function customPieces() {
-    const pieces = ['wP', 'wN', 'wB', 'wR', 'wQ', 'wK', 'bP', 'bN', 'bB', 'bR', 'bQ', 'bK'];
+export enum Orientation {
+    white = "white",
+    black = "black",
+}
+
+export function customPieces(orientation: Orientation, tabletMode: boolean) {
+    const wPieces = ['wP', 'wN', 'wB', 'wR', 'wQ', 'wK'];
+    const bPieces = ['bP', 'bN', 'bB', 'bR', 'bQ', 'bK'];
     const returnPieces: any[string] = [];
-    pieces.map((p) => {
-        returnPieces[p] = ({ squareWidth }: { squareWidth: number }) => (
+
+    let normalPiece = (piece: string, squareWidth: number) => {
+        return (
+            <div
+            style={{
+                width: squareWidth,
+                height: squareWidth,
+                backgroundImage: `url(/media/${piece}.png)`,
+                backgroundSize: '100%',
+            }}
+            />
+            )
+        }
+        
+        let rotatedPiece = (piece: string, squareWidth: number) => {
+        return (
             <div
                 style={{
                     width: squareWidth,
                     height: squareWidth,
-                    backgroundImage: `url(/media/${p}.png)`,
+                    backgroundImage: `url(/media/${piece}.png)`,
                     backgroundSize: '100%',
+                    transform: 'rotate(180deg)',
                 }}
             />
-        );
+        )
+    }
+
+    wPieces.map((p) => {
+        let shouldRotate: boolean = tabletMode && orientation === Orientation.black
+        if (shouldRotate) {
+            returnPieces[p] = ({ squareWidth }: { squareWidth: number }) => {
+                return rotatedPiece(p, squareWidth);
+            };
+        } else {
+            returnPieces[p] = ({ squareWidth }: { squareWidth: number }) => {
+                return normalPiece(p, squareWidth);
+            };
+        }
         return null;
     });
+    bPieces.map((p) => {
+        let shouldRotate: boolean = tabletMode && orientation === Orientation.white
+        if (shouldRotate) {
+            returnPieces[p] = ({ squareWidth }: { squareWidth: number }) => {
+                return rotatedPiece(p, squareWidth);
+            };
+        } else {
+            returnPieces[p] = ({ squareWidth }: { squareWidth: number }) => {
+                return normalPiece(p, squareWidth);
+            };
+        }
+        return null;
+    });
+
     return returnPieces;
 };
 
@@ -39,7 +87,7 @@ export function calculateMove(obj: { sourceSquare: Square, targetSquare: Square,
     if (obj.sourceSquare === 'spare' && obj.targetSquare === 'offBoard') {
         return null;
     };
-    
+
     let newGamePosition = {
         ...currentPosition
     };
@@ -50,11 +98,6 @@ export function calculateMove(obj: { sourceSquare: Square, targetSquare: Square,
     delete newGamePosition[obj.sourceSquare];
 
     return newGamePosition;
-}
-
-export enum Orientation {
-    white = "white",
-    black = "black",
 }
 
 export type PositionObject = {

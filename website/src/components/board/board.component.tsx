@@ -1,7 +1,7 @@
 import Chessboard from "../../lib/Chessboard";
 import { calculateMove, customPieces, Piece, Square } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
-import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectWindowMinDimension } from "../../state/game/game.slice";
+import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectTabletMode, selectWindowMinDimension } from "../../state/game/game.slice";
 
 
 export default function GameBoard(props: any) {
@@ -10,6 +10,7 @@ export default function GameBoard(props: any) {
     const boardOrientation = useSelector(selectBoardOrientation);
     const windowMinDimensions = useSelector(selectWindowMinDimension);
     const sessionId = useSelector(selectSessionId);
+    const tabletMode = useSelector(selectTabletMode);
 
 
     let gamePositionCopy = {
@@ -37,7 +38,7 @@ export default function GameBoard(props: any) {
                 orientation={boardOrientation}
                 width={windowMinDimensions * 0.8}
                 darkSquareStyle={{ backgroundColor: '' }}
-                pieces={customPieces()}
+                pieces={customPieces(boardOrientation, tabletMode)}
                 sparePieces={true}
                 dropOffBoard={'trash'}
                 transitionDuration={200}

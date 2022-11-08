@@ -277,7 +277,7 @@ class Chessboard extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { position, undo } = props;
+    const { position, undo, pieces } = props;
     const {
       currentPosition,
       manualDrop,
@@ -297,6 +297,7 @@ class Chessboard extends Component {
 
       if (manualDrop) {
         return {
+          pieces,
           sourceSquare,
           targetSquare,
           sourcePiece,
@@ -310,6 +311,7 @@ class Chessboard extends Component {
         Possible to add functionality for transitioning of multiple pieces later */
       if (squaresAffected && squaresAffected !== 2) {
         return {
+          pieces,
           currentPosition: positionFromProps,
           waitForTransition: false,
           manualDrop: false,
@@ -328,6 +330,7 @@ class Chessboard extends Component {
         delete tempPosition[targetSquare];
 
         return {
+          pieces,
           sourceSquare,
           targetSquare,
           sourcePiece,
@@ -345,6 +348,7 @@ class Chessboard extends Component {
       // allows for taking back a move
       if (undo) {
         return {
+          pieces,
           sourceSquare,
           targetSquare,
           sourcePiece,
@@ -357,6 +361,7 @@ class Chessboard extends Component {
       }
 
       return {
+        pieces,
         sourceSquare,
         targetSquare,
         sourcePiece,
@@ -368,7 +373,9 @@ class Chessboard extends Component {
     }
 
     // default case
-    return null;
+    return {
+      pieces
+    };
   }
 
   wasManuallyDropped = bool => this.setState({ manualDrop: bool });

@@ -76,7 +76,7 @@ class Piece extends Component {
     getSquareCoordinates: PropTypes.func,
     onDrop: PropTypes.oneOfType([PropTypes.bool, PropTypes.func]),
     transitionDuration: PropTypes.number,
-    pieces: PropTypes.object,
+    pieces: PropTypes.array,
     sourceSquare: PropTypes.string,
     targetSquare: PropTypes.string,
     waitForTransition: PropTypes.bool,
