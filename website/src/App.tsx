@@ -6,10 +6,15 @@ import { useDispatch } from 'react-redux';
 import { updatePosition, updateWindowProperties, updateWsState } from './state/game/game.slice';
 import './socket/socket'
 import { WebsocketAction, WebsocketMessage, WebsocketResponse, wsClient } from "./socket/socket";
+import { clearRecentData } from "./utilities/storage.utility";
 
 export default function App() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const refreshPage = () => {
+        navigate(0);
+    }
 
     useEffect(() => {
         wsClient.onmessage = (message) => {
@@ -24,6 +29,7 @@ export default function App() {
                 case WebsocketResponse.ERROR:
                     console.log('WS respond: ERROR');
                     if (msg.action === WebsocketAction.JOIN_ROOM) {
+                        clearRecentData()
                         navigate("/")
                     }
                     break
@@ -40,6 +46,7 @@ export default function App() {
         wsClient.onclose = () => {
             console.log('WS disconnected');
             dispatch(updateWsState(false));
+            refreshPage();
         };
         function handleResize() {
             dispatch(updateWindowProperties());

@@ -9,6 +9,9 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #8ba28c;
+  position: fixed;
+  width: 100%;
 }
 
 code {
