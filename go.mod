@@ -10,6 +10,13 @@ require (
 )
 
 require (
+	github.com/BurntSushi/toml v0.3.1 // indirect
+	github.com/jinzhu/configor v1.2.1 // indirect
+	github.com/leonidasdeim/goconfig v1.0.1 // indirect
+	gopkg.in/yaml.v2 v2.3.0 // indirect
+)
+
+require (
 	github.com/andybalholm/brotli v1.0.4 // indirect
 	github.com/fasthttp/websocket v1.5.0 // indirect
 	github.com/joho/godotenv v1.4.0
