@@ -13,9 +13,9 @@ func (h *ApiHandler) HealthCheck(c *fiber.Ctx) error {
 		Version string `json:"version"`
 		Config  string `json:"config"`
 	}{
-		"AppName",
-		"Version",
-		"Timestamp",
+		h.config.GetCfg().AppName,
+		h.config.GetCfg().Version,
+		h.config.GetTimestamp(),
 	}
 
 	return c.Status(http.StatusOK).JSON(payload)

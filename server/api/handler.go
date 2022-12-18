@@ -1,15 +1,19 @@
 package api
 
 import (
+	"github.com/leonidasdeim/goconfig"
+	"github.com/leonidasdeim/zen-chess/server/config"
 	"github.com/leonidasdeim/zen-chess/server/store"
 )
 
 type ApiHandler struct {
-	store *store.Store
+	config *goconfig.Config[config.Type]
+	store  *store.Store
 }
 
-func NewApiHandler(s *store.Store) *ApiHandler {
+func NewApiHandler(s *store.Store, c *goconfig.Config[config.Type]) *ApiHandler {
 	return &ApiHandler{
-		store: s,
+		store:  s,
+		config: c,
 	}
 }

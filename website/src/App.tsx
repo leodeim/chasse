@@ -30,7 +30,7 @@ export default function App() {
                     console.log('WS respond: ERROR');
                     if (msg.action === WebsocketAction.JOIN_ROOM) {
                         clearRecentData()
-                        navigate("/")
+                        navigate("/") // TODO: find better solution for restarting (maybe popup with button)
                     }
                     break
                 case WebsocketResponse.OK:

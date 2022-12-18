@@ -16,3 +16,7 @@
 
 # Go workspace file
 go.work
+
+# Go Config files
+app_config.json
+app_config.default.json
