@@ -1,6 +1,7 @@
 {
     "name": "ZenChess",
     "version": "",
+    "port": "",
     "store": {
         "port": "",
         "password": ""

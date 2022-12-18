@@ -22,7 +22,7 @@ func main() {
 	}
 
 	app := fiber.New()
-	store := store.NewStore(c.Cfg.Store.Port, c.Cfg.Store.Password)
+	store := store.NewStore(&c.Cfg.Store, c.Subscribers[config.STORE])
 
 	app.Static("/", "./assets")
 	app.Use(recover.New())
@@ -34,7 +34,7 @@ func main() {
 	}))
 
 	socket.SetupSocket(app, store)
-	api := api.NewApiHandler(store)
+	api := api.NewApiHandler(store, c)
 	api.RegisterApiRoutes(app)
 
 	if err := app.Listen(fmt.Sprintf("%s:%s", "localhost", c.Cfg.Port)); err != nil {

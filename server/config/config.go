@@ -3,7 +3,7 @@ package config
 type Subscriber int
 
 const (
-	FIRST Subscriber = iota
+	STORE Subscriber = iota
 	NUMBER_OF_SUBS
 )
 
