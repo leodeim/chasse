@@ -1,4 +1,4 @@
-import Chessboard from "../../lib/Chessboard";
+import Chessboard from "@leonidasdeim/chessboardjsx";
 import { calculateMove, customPieces, Piece, Square } from "../../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
 import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectTabletMode, selectWindowMinDimension } from "../../state/game/game.slice";
