@@ -1,3 +1,7 @@
+<p align="center">
+ <img src="logo.png" width="350">
+</p>
+
 # Online chessboard
 
 Just a simple chessboard - without timers, rules etc. Play just like you do it OTB.
