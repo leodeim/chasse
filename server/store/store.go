@@ -4,8 +4,11 @@ import (
 	"fmt"
 
 	"github.com/go-redis/redis"
+	"github.com/leonidasdeim/goconfig"
 	"github.com/leonidasdeim/zen-chess/server/config"
 )
+
+const MODULE_NAME = "redis_store"
 
 type Store struct {
 	config *config.Connection
@@ -13,9 +16,11 @@ type Store struct {
 	db     *redis.Client
 }
 
-func NewStore(c *config.Connection, ch chan bool) *Store {
+func NewStore(c *goconfig.Config[config.Type]) *Store {
+	c.AddSubscriber(MODULE_NAME)
 	s := Store{
-		config: c,
+		config: &c.GetCfg().Store,
+		notify: c.GetSubscriber(MODULE_NAME),
 	}
 	s.reconfigureStore()
 	go s.configurationRunner()

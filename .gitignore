@@ -18,5 +18,5 @@
 go.work
 
 # Go Config files
-app_config.active.json
+app_config.json
 app_config.default.json

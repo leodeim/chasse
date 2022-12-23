@@ -7,11 +7,11 @@ import (
 )
 
 type ApiHandler struct {
-	config *goconfig.Data[config.Type]
+	config *goconfig.Config[config.Type]
 	store  *store.Store
 }
 
-func NewApiHandler(s *store.Store, c *goconfig.Data[config.Type]) *ApiHandler {
+func NewApiHandler(s *store.Store, c *goconfig.Config[config.Type]) *ApiHandler {
 	return &ApiHandler{
 		store:  s,
 		config: c,

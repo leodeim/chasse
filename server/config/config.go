@@ -8,15 +8,15 @@ const (
 )
 
 type Type struct {
-	AppName string     `json:"name"`
-	Version string     `json:"version"`
-	Port    string     `json:"port"`
-	Store   Connection `json:"store"`
+	AppName string     `json:"name" validate:"required"`
+	Version string     `json:"version" validate:"required"`
+	Port    string     `json:"port" validate:"required"`
+	Store   Connection `json:"store" validate:"required"`
 }
 
 type Connection struct {
 	User     string `json:"user"`
-	Password string `json:"password"`
-	Host     string `json:"host"`
-	Port     string `json:"port"`
+	Password string `json:"password" validate:"required"`
+	Host     string `json:"host" validate:"required"`
+	Port     string `json:"port" validate:"required"`
 }

@@ -16,13 +16,13 @@ import (
 )
 
 func main() {
-	c, err := goconfig.NewConfig[config.Type](int(config.NUMBER_OF_SUBS))
+	c, err := goconfig.Init[config.Type](goconfig.WithName("app_config"))
 	if err != nil {
 		log.Panicf("Configuration error: %v", err)
 	}
 
 	app := fiber.New()
-	store := store.NewStore(&c.Cfg.Store, c.Subscribers[config.STORE])
+	store := store.NewStore(c)
 
 	app.Static("/", "./assets")
 	app.Use(recover.New())
@@ -37,7 +37,7 @@ func main() {
 	api := api.NewApiHandler(store, c)
 	api.RegisterApiRoutes(app)
 
-	if err := app.Listen(fmt.Sprintf("%s:%s", "localhost", c.Cfg.Port)); err != nil {
+	if err := app.Listen(fmt.Sprintf("%s:%s", "localhost", c.GetCfg().Port)); err != nil {
 		log.Panic(err)
 	}
 }
