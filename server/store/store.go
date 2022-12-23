@@ -4,22 +4,41 @@ import (
 	"fmt"
 
 	"github.com/go-redis/redis"
+	"github.com/leonidasdeim/goconfig"
+	"github.com/leonidasdeim/zen-chess/server/config"
 )
 
+const MODULE_NAME = "redis_store"
+
 type Store struct {
-	db *redis.Client
+	config *config.Connection
+	notify chan bool
+	db     *redis.Client
 }
 
-func NewStore(port string, pw string) *Store {
-	s := Store{}
-	s.db = getNewRedisClient(port, pw)
+func NewStore(c *goconfig.Config[config.Type]) *Store {
+	c.AddSubscriber(MODULE_NAME)
+	s := Store{
+		config: &c.GetCfg().Store,
+		notify: c.GetSubscriber(MODULE_NAME),
+	}
+	s.reconfigureStore()
+	go s.configurationRunner()
+
 	return &s
 }
 
-func getNewRedisClient(port string, pw string) *redis.Client {
-	return redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("localhost:%s", port),
-		Password: pw,
+func (s *Store) reconfigureStore() {
+	s.db = redis.NewClient(&redis.Options{
+		Addr:     fmt.Sprintf("%s:%s", s.config.Host, s.config.Port),
+		Password: s.config.Password,
 		DB:       0,
 	})
+}
+
+func (s *Store) configurationRunner() {
+	for {
+		<-s.notify
+		s.reconfigureStore()
+	}
 }
