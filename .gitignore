@@ -16,7 +16,3 @@
 
 # Go workspace file
 go.work
-
-# Go Config files
-chasse.json
-chasse.default.json
