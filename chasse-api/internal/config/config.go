@@ -10,13 +10,13 @@ const (
 type Type struct {
 	AppName string     `json:"name" validate:"required"`
 	Version string     `json:"version" validate:"required"`
-	Port    string     `json:"port" validate:"required"`
+	Port    string     `json:"port" default:"8080"`
 	Store   Connection `json:"store" validate:"required"`
 }
 
 type Connection struct {
 	User     string `json:"user"`
-	Password string `json:"password" validate:"required"`
+	Password string `json:"password"`
 	Host     string `json:"host" validate:"required"`
 	Port     string `json:"port" validate:"required"`
 }
