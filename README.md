@@ -1,5 +1,5 @@
 <p align="center">
- <img src="logo.png" width="350">
+ <img src="img/logo2.png" width="350">
 </p>
 <div align="center">
 
@@ -11,23 +11,23 @@
   
 </div>
 
-# Online chessboard
+# chasse
 
 Just a simple chessboard - without timers, rules etc. Play just like you do it OTB.
 
-<http://www.chessboard.tech/>
+<https://chasse.fun>
 
 ## Build an API
 
 ```bash
-cd server/
-GOOS=linux GOARCH=amd64 go build -o build/chess-amd64-linux main.go
+cd chasse-api/
+GOOS=linux GOARCH=amd64 go build -o build/chasse-api main.go
 ```
 
 ## Build front-end
 
 ```bash
-cd website/
+cd chasse-app/
 npm i
 npm run build
 ```
