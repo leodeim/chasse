@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import { getRecentSession } from '../../utilities/storage.utility';
 import './style.css';
+import { getApiUrl } from '../../utilities/environment.utility';
 
 export default function Home() {
     const windowMinDimensions = useSelector(selectWindowMinDimension);
@@ -63,7 +64,7 @@ export default function Home() {
 function CreateSessionSquare(props) {
     let createSession = () => {
         axios
-            .get("https://www.chasse.fun/api/v1/session/new")
+            .get(getApiUrl() + "api/v1/session/new")
             .then((response: any) => {
                 props.navigate("/board/" + response.data.sessionId)
             })

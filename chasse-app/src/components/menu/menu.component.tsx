@@ -1,13 +1,14 @@
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { selectSessionId } from '../../state/game/game.slice';
+import { getApiUrl } from '../../utilities/environment.utility';
 import { HomeIcon, ShareIcon } from '../../utilities/icons.utility';
 import { copyToClipboard } from '../../utilities/window.utility';
 
 export default function Menu() {
     const sessionId = useSelector(selectSessionId);
     
-    let handleShare = () => { copyToClipboard("https://www.chasse.fun/board/" + sessionId) }
+    let handleShare = () => { copyToClipboard(getApiUrl() + "board/" + sessionId) }
 
     return (
         <div className="flex sm:flex-col justify-center sm:mr-4 text-colorSecondary">
