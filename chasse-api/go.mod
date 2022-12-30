@@ -7,7 +7,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.37.0
 	github.com/gofiber/websocket/v2 v2.0.25
 	github.com/google/uuid v1.3.0
-	github.com/leonidasdeim/goconfig v1.3.5
+	github.com/leonidasdeim/goconfig v1.4.0
 )
 
 require (
@@ -30,4 +30,5 @@ require (
 	github.com/valyala/fasthttp v1.39.0 // indirect
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sys v0.0.0-20220722155257-8c9f86f7a55f // indirect
+	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

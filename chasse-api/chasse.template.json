@@ -1,9 +1,10 @@
 {
-    "name": "ZenChess",
-    "version": "",
-    "port": "",
+    "name": "chasse",
+    "version": "dev",
+    "port": "8085",
     "store": {
-        "port": "",
+        "host": "localhost",
+        "port": "6381",
         "password": ""
     }
 }

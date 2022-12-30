@@ -4,5 +4,5 @@ services:
   redis:
     image: redis:6.2-alpine
     ports:
-      - ${REDIS_PORT}:6379
-    command: redis-server --save 60 1 --requirepass ${REDIS_PW} --loglevel warning
+      - 6381:6379
+    command: redis-server --save 60 1 --loglevel warning

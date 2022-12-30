@@ -1,5 +1,5 @@
 <p align="center">
- <img src="img/logo2.png" width="350">
+ <img src="misc/img/logo2.png" width="350">
 </p>
 <div align="center">
 
@@ -17,17 +17,22 @@ Just a simple chessboard - without timers, rules etc. Play just like you do it O
 
 <https://chasse.fun>
 
-## Build an API
+## Build
+
+Builds API binary and APP archive in `build/` folder
 
 ```bash
-cd chasse-api/
-GOOS=linux GOARCH=amd64 go build -o build/chasse-api main.go
+
+make build
 ```
 
-## Build front-end
+## Run locally
+
+Starts Redis using `docker-compose` and two processes: API and APP.
 
 ```bash
-cd chasse-app/
-npm i
-npm run build
+make run -j2
+
+// cleanup after:
+make clean
 ```

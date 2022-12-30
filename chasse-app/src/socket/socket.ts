@@ -1,6 +1,7 @@
 import { w3cwebsocket } from "websocket";
+import { getWebsocketUrl } from "../utilities/environment.utility";
 
-export const wsClient = new w3cwebsocket('wss://www.chasse.fun/api/ws');
+export const wsClient = new w3cwebsocket(getWebsocketUrl() + 'api/ws');
 
 export enum WebsocketAction {
     BLANK = 0,
