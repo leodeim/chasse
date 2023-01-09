@@ -1,5 +1,5 @@
 import { w3cwebsocket } from "websocket";
-import { getWebsocketUrl } from "../utilities/environment.utility";
+import { getWebsocketUrl, getDevMode } from "../utilities/environment.utility";
 
 export const wsClient = new w3cwebsocket(getWebsocketUrl() + 'api/ws');
 
@@ -31,7 +31,7 @@ export type MoveMessage = {
 }
 
 export function SendWebsocketMove(data: MoveMessage) {
-    console.log("WS move sent")
+    getDevMode() && console.log("WS move sent")
     let msg: WebsocketMessage = {
         action: WebsocketAction.MOVE,
         position: data.position,
@@ -44,7 +44,7 @@ export function SendWebsocketJoinRoom(sessionId: string): boolean {
     if (sessionId === '' || sessionId === undefined) {
         return false;
     }
-    console.log("WS join room sent")
+    getDevMode() && console.log("WS join room sent")
     let msg: WebsocketMessage = {
         action: WebsocketAction.JOIN_ROOM,
         sessionId: sessionId

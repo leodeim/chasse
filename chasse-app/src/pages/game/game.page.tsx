@@ -28,14 +28,12 @@ export default function Game() {
     }, [wsState]);
 
     return (
-        <div className="flex sm:flex-row flex-col justify-around min-h-screen">
-            <div className="flex justify-center">
+        <div className="sm:flex sm:flex-row">
+            <div className="flex justify-center pb-7 sm:pb-0">
                 <Menu />
             </div>
-            <div className="flex flex-col justify-center">
-                <GameBoard />
-            </div>
-            <div className="flex justify-center">
+            <GameBoard />
+            <div className="flex justify-center pt-7 sm:pt-0">
                 <Controls />
             </div>
         </div>
