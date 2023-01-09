@@ -72,6 +72,3 @@ api-health:
 
 git_sha:
 	@echo ${GIT_SHA}
-
-test:
-	@echo ${TEST_1}
