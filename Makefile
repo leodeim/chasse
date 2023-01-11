@@ -19,7 +19,7 @@ build-app:
 	if ! [ -d ${BUILD_DIR} ] ; then mkdir ${BUILD_DIR} ; fi
 	cd ${APP};\
 	npm install;\
-	npm run build;\
+	REACT_APP_API_URL=${REACT_APP_API_URL} REACT_APP_WS_URL=${REACT_APP_WS_URL}  npm run build;\
 	tar -zcvf ${APP_FILE_NAME} build;\
 	mv ${APP_FILE_NAME} ../${BUILD_DIR};
 
@@ -34,12 +34,12 @@ build: build-api build-app
 run-app:
 	cd ${APP};\
 	npm install;\
-	REACT_APP_DEV_MODE=true npm run start;
+	npm run start;
 
 run-app-remote:
 	cd ${APP};\
 	npm install;\
-	npm run start;
+	REACT_APP_API_URL=${REACT_APP_API_URL} REACT_APP_WS_URL=${REACT_APP_WS_URL} npm run start;
 
 run-api: 
 	docker-compose up -d
