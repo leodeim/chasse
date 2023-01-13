@@ -15,3 +15,21 @@ export function getWebsocketUrl(): string {
 
     return CUSTOM_URL
 }
+
+export function getAppVersion(): string {
+    const VERSION = process.env.REACT_APP_VERSION;
+    if (VERSION === undefined) {
+        return "no version"
+    }
+
+    return VERSION
+}
+
+export function getDevMode(): boolean {
+    const DEV_MODE = process.env.REACT_APP_DEV_MODE;
+    if (DEV_MODE === undefined) {
+        return false
+    }
+
+    return true
+}
