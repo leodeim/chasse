@@ -7,6 +7,7 @@ import { updatePosition, updateWindowProperties, updateWsState } from './state/g
 import './socket/socket'
 import { WebsocketAction, WebsocketMessage, WebsocketResponse, wsClient } from "./socket/socket";
 import { clearRecentData } from "./utilities/storage.utility";
+import { getDevMode, getAppVersion } from "./utilities/environment.utility";
 
 export default function App() {
     const dispatch = useDispatch();
@@ -17,17 +18,19 @@ export default function App() {
     }
 
     useEffect(() => {
+        console.log('APP VERSION: ', getAppVersion())
+
         wsClient.onmessage = (message) => {
             let msg: WebsocketMessage = JSON.parse(message.data.toString())
             switch (msg.response) {
                 case WebsocketResponse.BLANK:
                     if (msg.action === WebsocketAction.MOVE && msg.position !== undefined) {
-                        console.log('WS - move received');
+                        getDevMode() && console.log('WS - move received');
                         dispatch(updatePosition(msg.position))
                     }
                     break
                 case WebsocketResponse.ERROR:
-                    console.log('WS respond: ERROR');
+                    getDevMode() && console.log('WS respond: ERROR');
                     if (msg.action === WebsocketAction.JOIN_ROOM) {
                         clearRecentData()
                         navigate("/") // TODO: find better solution for restarting (maybe popup with button)
@@ -36,15 +39,15 @@ export default function App() {
                 case WebsocketResponse.OK:
                     if (msg.action === WebsocketAction.CONNECT) {
                         dispatch(updateWsState(true));
-                        console.log('WS connection successful');
+                        getDevMode() && console.log('WS connection successful');
                         break
                     }
-                    console.log('WS respond: OK');
+                    getDevMode() && console.log('WS respond: OK');
                     break
             }
         };
         wsClient.onclose = () => {
-            console.log('WS disconnected');
+            getDevMode() && console.log('WS disconnected');
             dispatch(updateWsState(false));
             refreshPage();
         };
