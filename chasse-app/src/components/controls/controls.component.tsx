@@ -80,24 +80,24 @@ function BoardActionsPopover(props) {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 translate-y-1"
                     >
-                        <Popover.Panel className="absolute right-full bottom-full z-50 w-40">
+                        <Popover.Panel className="absolute right-full bottom-full z-50 w-24">
                         <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                                <div className="relative grid bg-colorMainLight p-7">
+                                <div className="relative grid bg-colorMainLight p-5">
                                     <Popover.Button onClick={() => props.clear()}
                                         className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                                     >
-                                        <div className="ml-4">
+                                        <div className="ml-2">
                                             <p className="text-sm font-medium text-gray-900">
                                                 Clear
                                             </p>
                                         </div>
                                     </Popover.Button>
                                 </div>
-                                <div className="relative grid bg-colorMainLight p-7">
+                                <div className="relative grid bg-colorMainLight p-5">
                                     <Popover.Button onClick={() => props.reset()}
                                         className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                                     >
-                                        <div className="ml-4">
+                                        <div className="ml-2">
                                             <p className="text-sm font-medium text-gray-900">
                                                 Reset
                                             </p>
