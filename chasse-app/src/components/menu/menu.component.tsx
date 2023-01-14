@@ -46,20 +46,18 @@ function SharePopover(props) {
                         leaveFrom="opacity-100 translate-y-0"
                         leaveTo="opacity-0 translate-y-1"
                     >
-                        <Popover.Panel className="absolute z-50 w-40">
+                        <Popover.Panel className="absolute z-50 w-36">
                             <div className="overflow-hidden rounded-lg shadow-lg ring-1 ring-black ring-opacity-5">
-                                <div className="relative grid gap-8 bg-colorMainLight p-7 lg:grid-cols-2">
-                                    <a
-                                        href='##'
-                                        onClick={() => props.handle()}
+                                <div className="relative grid gap-8 bg-colorMainLight p-6">
+                                    <Popover.Button onClick={() => props.handle()}
                                         className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
                                     >
-                                        <div className="ml-4">
+                                        <div className="ml-3">
                                             <p className="text-sm font-medium text-gray-900">
                                                 Copy link
                                             </p>
                                         </div>
-                                    </a>
+                                    </Popover.Button>
                                 </div>
                             </div>
                         </Popover.Panel>
