@@ -17,6 +17,7 @@ interface GameState {
     tabletMode: boolean,
     sessionId: string,
     loading: boolean,
+    recentSessionAvailable: boolean,
     wsState: boolean
 }
 
@@ -28,6 +29,7 @@ const initialState: GameState = {
     tabletMode: false,
     sessionId: '',
     loading: false,
+    recentSessionAvailable: false,
     wsState: false
 };
 
@@ -74,6 +76,9 @@ export const gameSlice = createSlice({
         toggleTabletMode(state) {
             state.tabletMode = !state.tabletMode;
         },
+        updateRecentSessionState(state, action: PayloadAction<boolean>) {
+            state.recentSessionAvailable = action.payload;
+        },
     },
 });
 
@@ -86,6 +91,7 @@ export const {
     toggleTabletMode,
     updateWsState,
     makeMoveSuccessful,
+    updateRecentSessionState,
     updateSessionId} = gameSlice.actions;
 
 export const selectGamePosition = (state: RootState) => state.game.gamePosition
@@ -96,5 +102,6 @@ export const selectSessionId = (state: RootState) => state.game.sessionId;
 export const selectHistory = (state: RootState) => state.game.history;
 export const selectWsState = (state: RootState) => state.game.wsState;
 export const selectTabletMode = (state: RootState) => state.game.tabletMode;
+export const selectRecentSessionStatus = (state: RootState) => state.game.recentSessionAvailable;
 
 export default gameSlice.reducer;

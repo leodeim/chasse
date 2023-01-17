@@ -18,11 +18,11 @@ export default function Menu() {
                 <Link to="/" className="sm:pb-4 pl-4 pr-4 sm:pl-2 sm:pr-2 sm:pt-2" onClick={() => { }}>
                     <HomeIcon />
                 </Link>
-                <button className="pl-4 pr-4 sm:pl-2 sm:pr-2">
+                <div className="pl-4 pr-4 sm:pl-2 sm:pr-2">
                     <SharePopover
                         handle={handleShare}
                     />
-                </button>
+                </div>
             </div>
         </div>
     );

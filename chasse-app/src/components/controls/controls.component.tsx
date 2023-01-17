@@ -52,12 +52,12 @@ export default function Controls() {
                 <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2" onClick={() => dispatch(toggleTabletMode())}>
                     <TabletModeIcon />
                 </button>
-                <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2 text-colorRed">
+                <div className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2 text-colorRed">
                     <BoardActionsPopover
                         reset={resetBoard}
                         clear={clearBoard}
                     />
-                </button>
+                </div>
             </div>
         </div>
     );
