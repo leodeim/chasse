@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { selectWindowMinDimension, updateSessionId } from '../../state/game/game.slice';
+import { selectRecentSessionStatus, selectWindowMinDimension, updateSessionId } from '../../state/game/game.slice';
 import { SiAddthis } from 'react-icons/si';
 import { MdOutlineOpenInNew } from 'react-icons/md';
 import axios from 'axios';
@@ -11,6 +11,7 @@ import { getApiUrl } from '../../utilities/environment.utility';
 
 export default function Home() {
     const windowMinDimensions = useSelector(selectWindowMinDimension);
+    const recentSessionAvailable = useSelector(selectRecentSessionStatus);
     const navigate = useNavigate();
     const dispatch = useDispatch();
     const recentSession = getRecentSession();
@@ -41,11 +42,11 @@ export default function Home() {
             </div>
             <div className='flex flex-row'>
                 {
-                    recentSession === null &&
+                    !recentSessionAvailable &&
                     <div style={squareStyle}></div>
                 }
                 {
-                    recentSession !== null &&
+                    recentSessionAvailable &&
                     <RecentSessionSquare
                         style={squareStyle}
                         navigate={navigate}

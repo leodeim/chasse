@@ -13,13 +13,13 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	gc "github.com/leonidasdeim/goconfig"
-	ch "github.com/leonidasdeim/goconfig/pkg/handler"
+	"github.com/leonidasdeim/goconfig"
+	fh "github.com/leonidasdeim/goconfig/pkg/filehandler"
 )
 
 func main() {
-	h, _ := ch.New(ch.WithName("chasse"))
-	c, err := gc.Init[config.Type](h)
+	h, _ := fh.New(fh.WithName("chasse"), fh.WithType(fh.JSON))
+	c, err := goconfig.Init[config.Type](h)
 	if err != nil {
 		log.Panicf("Configuration error: %v", err)
 	}

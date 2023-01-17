@@ -39,7 +39,7 @@ func (h *ApiHandler) GetSession(c *fiber.Ctx) error {
 
 	session, err := h.store.GetSession(uuid)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(err)
+		return c.Status(http.StatusNotFound).JSON(err)
 	}
 
 	return c.Status(http.StatusOK).JSON(session)

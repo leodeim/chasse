@@ -1,12 +1,12 @@
 import GameBoard from "../../components/board/board.component";
 import Controls from "../../components/controls/controls.component";
 import Menu from "../../components/menu/menu.component";
-import { SendWebsocketJoinRoom } from "../../socket/socket";
 import { useEffect } from "react";
-import { selectWsState, updateSessionId } from "../../state/game/game.slice";
+import { selectWsState, updateRecentSessionState, updateSessionId } from "../../state/game/game.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { storeSession } from "../../utilities/storage.utility";
+import { wsHandler } from "../../App";
 
 
 export default function Game() {
@@ -21,8 +21,9 @@ export default function Game() {
         }
         if (wsState === true && sessionId !== undefined) {
             dispatch(updateSessionId(sessionId))
-            SendWebsocketJoinRoom(sessionId)
+            wsHandler.sendJoinRoom(sessionId)
             storeSession(sessionId)
+            dispatch(updateRecentSessionState(true))
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [wsState]);
