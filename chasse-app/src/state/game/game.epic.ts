@@ -2,10 +2,10 @@ import { Action } from '@reduxjs/toolkit'
 import { Observable } from 'rxjs'
 import { filter, mergeAll, map } from 'rxjs/operators'
 import { makeMove, makeMoveSuccessful, MoveItem } from './game.slice'
-import { SendWebsocketMove } from '../../socket/socket'
+import { wsHandler } from '../../App'
 
 const writeMoveToSocket = async (move: MoveItem): Promise<MoveItem> => {
-    SendWebsocketMove({
+    wsHandler.sendMove({
         sessionId: move.sessionId,
         position: JSON.stringify(move.position)
     })

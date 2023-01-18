@@ -5,11 +5,13 @@ import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { updatePosition, updateRecentSessionState, updateWindowProperties, updateWsState } from './state/game/game.slice';
 import './socket/socket'
-import { WebsocketAction, WebsocketMessage, WebsocketResponse, wsClient } from "./socket/socket";
+import { WebsocketAction, WebsocketMessage, WebsocketResponse, SocketHandler } from "./socket/socket";
 import { clearRecentData, getRecentSession } from "./utilities/storage.utility";
 import { getDevMode, getAppVersion, getApiUrl } from "./utilities/environment.utility";
 import { AnyAction, Dispatch } from 'redux';
 import axios, { AxiosResponse } from "axios";
+
+export const wsHandler = new SocketHandler()
 
 export default function App() {
     const dispatch = useDispatch();
@@ -38,7 +40,7 @@ function setupApplication(dispatch: Dispatch<AnyAction>, navigate: NavigateFunct
         navigate(0);
     }
 
-    wsClient.onmessage = (message) => {
+    wsHandler.client.onmessage = (message) => {
         let msg: WebsocketMessage = JSON.parse(message.data.toString())
         switch (msg.response) {
             case WebsocketResponse.BLANK:
@@ -64,10 +66,19 @@ function setupApplication(dispatch: Dispatch<AnyAction>, navigate: NavigateFunct
                 break
         }
     };
-    wsClient.onclose = () => {
+    wsHandler.client.onclose = () => {
         getDevMode() && console.log('WS disconnected');
         dispatch(updateWsState(false));
-        refreshPage();
+        setTimeout(function () {
+            wsHandler.reconnect()
+            console.log("LOL");
+        }, 5000);
+        wsHandler.reconnect()
+        // refreshPage();
+    };
+    wsHandler.client.onopen = () => {
+        getDevMode() && console.log('WS opened');
+        // refreshPage();
     };
 
     function checkLastSession() {

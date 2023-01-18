@@ -1,8 +1,6 @@
 import { w3cwebsocket } from "websocket";
 import { getWebsocketUrl, getDevMode } from "../utilities/environment.utility";
 
-export const wsClient = new w3cwebsocket(getWebsocketUrl() + 'api/ws');
-
 export enum WebsocketAction {
     BLANK = 0,
     MOVE = 1,
@@ -30,25 +28,41 @@ export type MoveMessage = {
     sessionId: string
 }
 
-export function SendWebsocketMove(data: MoveMessage) {
-    getDevMode() && console.log("WS move sent")
-    let msg: WebsocketMessage = {
-        action: WebsocketAction.MOVE,
-        position: data.position,
-        sessionId: data.sessionId
+export class SocketHandler {
+    public client: w3cwebsocket;
+   
+    constructor() {
+      this.client = new w3cwebsocket(getWebsocketUrl() + 'api/ws');
     }
-    wsClient.send(JSON.stringify(msg));
-}
 
-export function SendWebsocketJoinRoom(sessionId: string): boolean {
-    if (sessionId === '' || sessionId === undefined) {
-        return false;
+    reconnect() {
+        this.client = new w3cwebsocket(getWebsocketUrl() + 'api/ws');
     }
-    getDevMode() && console.log("WS join room sent")
-    let msg: WebsocketMessage = {
-        action: WebsocketAction.JOIN_ROOM,
-        sessionId: sessionId
+
+    registerCallbacks() {
+        
     }
-    wsClient.send(JSON.stringify(msg));
-    return true;
+   
+    sendMove(data: MoveMessage) {
+        getDevMode() && console.log("WS move sent")
+        let msg: WebsocketMessage = {
+            action: WebsocketAction.MOVE,
+            position: data.position,
+            sessionId: data.sessionId
+        }
+        this.client.send(JSON.stringify(msg));
+    }
+    
+    sendJoinRoom(sessionId: string): boolean {
+        if (sessionId === '' || sessionId === undefined) {
+            return false;
+        }
+        getDevMode() && console.log("WS join room sent")
+        let msg: WebsocketMessage = {
+            action: WebsocketAction.JOIN_ROOM,
+            sessionId: sessionId
+        }
+        this.client.send(JSON.stringify(msg));
+        return true;
+    }
 }
