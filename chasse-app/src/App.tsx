@@ -92,11 +92,11 @@ function ReconnectingDialog(props) {
                                     as="h3"
                                     className="text-lg font-medium leading-6 text-gray-900"
                                 >
-                                    Connection lost
+                                    Connecting...
                                 </Dialog.Title>
                                 <div className="mt-2">
                                     <p className="text-sm text-gray-500">
-                                        Please wait, trying to reconnect...
+                                        Please wait, trying to reconnect
                                     </p>
                                 </div>
                             </Dialog.Panel>
