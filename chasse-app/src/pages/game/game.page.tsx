@@ -6,7 +6,7 @@ import { selectWsState, updateRecentSessionState, updateSessionId } from "../../
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
 import { storeSession } from "../../utilities/storage.utility";
-import { wsHandler } from "../../socket/setup";
+import { wsHandler } from "../../socket/setup.socket";
 
 
 export default function Game() {

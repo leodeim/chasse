@@ -3,7 +3,7 @@ import Home from './pages/home/home.page';
 import Game from './pages/game/game.page';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { setupWsApp } from "./socket/setup";
+import { setupWsApp } from "./socket/setup.socket";
 import { clearRecentData, getRecentSession } from "./utilities/storage.utility";
 import axios, { AxiosResponse } from "axios";
 import { getApiUrl, getAppVersion } from "./utilities/environment.utility";

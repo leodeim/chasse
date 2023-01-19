@@ -1,6 +1,6 @@
 import { updatePosition, updateWsState } from '../state/game/game.slice';
-import './socket'
-import { WebsocketAction, WebsocketMessage, WebsocketResponse, SocketHandler, SocketCallbacks } from "./socket";
+import './handler.socket'
+import { WebsocketAction, WebsocketMessage, WebsocketResponse, SocketHandler, SocketCallbacks } from "./handler.socket";
 import { clearRecentData } from "../utilities/storage.utility";
 import { getDevMode } from "../utilities/environment.utility";
 import { AnyAction, Dispatch } from 'redux';
