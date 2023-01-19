@@ -1,7 +1,7 @@
 import Chessboard from "@leonidasdeim/chessboardjsx";
-import { calculateMove, customPieces, Piece, Square } from "../../utilities/chess.utility";
+import { calculateMove, customPieces, Piece, Square } from "../utilities/chess.utility";
 import { useDispatch, useSelector } from "react-redux";
-import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectTabletMode, selectWindowMinDimension } from "../../state/game/game.slice";
+import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectTabletMode, selectWindowMinDimension } from "../state/game/game.slice";
 
 
 export default function GameBoard(props: any) {

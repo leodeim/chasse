@@ -1,12 +1,12 @@
-import GameBoard from "../../components/board/board.component";
-import Controls from "../../components/controls/controls.component";
-import Menu from "../../components/menu/menu.component";
+import GameBoard from "../components/board.component";
+import Controls from "../components/controls.component";
+import Menu from "../components/menu.component";
 import { useEffect } from "react";
-import { selectWsState, updateRecentSessionState, updateSessionId } from "../../state/game/game.slice";
+import { selectWsState, updateRecentSessionState, updateSessionId } from "../state/game/game.slice";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate } from "react-router-dom";
-import { storeSession } from "../../utilities/storage.utility";
-import { wsHandler } from "../../socket/setup";
+import { storeSession } from "../utilities/storage.utility";
+import { wsHandler } from "../socket/socket.setup";
 
 
 export default function Game() {
