@@ -67,7 +67,7 @@ function onClose(event: ICloseEvent, dispatch: Dispatch<AnyAction>) {
     setTimeout(function () {
         wsHandler!.connect(wsCallbacks)
         getDevMode() && console.log('WS TRY RECONNECT');
-    }, 2000);
+    }, 1000);
 }
 
 function onError(error: Error) {
