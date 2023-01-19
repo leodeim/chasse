@@ -1,13 +1,13 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { selectRecentSessionStatus, selectWindowMinDimension, updateSessionId } from '../../state/game/game.slice';
+import { selectRecentSessionStatus, selectWindowMinDimension, updateSessionId } from '../state/game/game.slice';
 import { SiAddthis } from 'react-icons/si';
 import { MdOutlineOpenInNew } from 'react-icons/md';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
-import { getRecentSession } from '../../utilities/storage.utility';
-import './style.css';
-import { getApiUrl } from '../../utilities/environment.utility';
+import { getRecentSession } from '../utilities/storage.utility';
+import './home.style.css';
+import { getApiUrl } from '../utilities/environment.utility';
 
 export default function Home() {
     const windowMinDimensions = useSelector(selectWindowMinDimension);

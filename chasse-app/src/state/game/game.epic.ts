@@ -2,7 +2,7 @@ import { Action } from '@reduxjs/toolkit'
 import { Observable } from 'rxjs'
 import { filter, mergeAll, map } from 'rxjs/operators'
 import { makeMove, makeMoveSuccessful, MoveItem } from './game.slice'
-import { wsHandler } from '../../socket/setup.socket'
+import { wsHandler } from '../../socket/socket.setup'
 
 const writeMoveToSocket = async (move: MoveItem): Promise<MoveItem> => {
     wsHandler.sendMove({
