@@ -32,13 +32,13 @@ export class SocketHandler {
     public client: w3cwebsocket | undefined;
    
     constructor(callbacks: SocketCallbacks) {
-        this.connect(callbacks)
+        this.connect(callbacks);
     }
 
     connect(callbacks: SocketCallbacks) {
         getDevMode() && console.log('WS CONNECTING...');
         this.client = new w3cwebsocket(getWebsocketUrl() + 'api/ws');
-        this.registerCallbacks(callbacks)
+        this.registerCallbacks(callbacks);
     }
 
     registerCallbacks(callbacks: SocketCallbacks) {
@@ -50,14 +50,14 @@ export class SocketHandler {
 
     private clientIsActive(): boolean {
         if (!this.client === undefined) {
-            return false
+            return false;
         }
-        return true
+        return true;
     }
    
     sendMove(data: MoveMessage) {
         if (!this.clientIsActive()) {
-            return
+            return;
         }
 
         getDevMode() && console.log("WS <- MOVE")
@@ -85,19 +85,19 @@ export class SocketHandler {
 }
 
 interface messageReceiver {
-    (message: IMessageEvent): void;
+    (message: IMessageEvent): void
 };
 
 interface openReceiver {
-    (): void;
+    (): void
 };
 
 interface closeReceiver {
-    (event: ICloseEvent): void;
+    (event: ICloseEvent): void
 };
 
 interface errorReceiver {
-    (error: Error): void;
+    (error: Error): void
 };
 
 export type SocketCallbacks = {
