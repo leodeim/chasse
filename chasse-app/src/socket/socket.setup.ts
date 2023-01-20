@@ -1,29 +1,29 @@
-import { updatePosition, updateWsState } from '../state/game/game.slice';
-import './handler.socket'
-import { WebsocketAction, WebsocketMessage, WebsocketResponse, SocketHandler, SocketCallbacks } from "./handler.socket";
-import { clearRecentData } from "../utilities/storage.utility";
-import { getDevMode } from "../utilities/environment.utility";
 import { AnyAction, Dispatch } from 'redux';
 import { NavigateFunction } from "react-router-dom";
 import { IMessageEvent, ICloseEvent } from "websocket";
+import { WebsocketAction, WebsocketMessage, WebsocketResponse, SocketHandler, SocketCallbacks } from "./socket.handler";
+import { updatePosition, updateWsState } from '../state/game/game.slice';
+import { clearRecentData } from "../utilities/storage.utility";
+import { getDevMode } from "../utilities/environment.utility";
+import './socket.handler'
 
-var wsCallbacks: SocketCallbacks = {
-    error: onError
-}
+var wsCallbacks: SocketCallbacks = {}
 
 export const wsHandler = new SocketHandler(wsCallbacks)
 
 export function setupWsApp(dispatch: Dispatch<AnyAction>, navigate: NavigateFunction) {
     wsCallbacks.message = (message: IMessageEvent) => {
-        onMessage(message, dispatch, navigate)
+        onMessage(message, dispatch, navigate);
     }
     wsCallbacks.open = () => {
-        onOpen(dispatch)
+        onOpen(dispatch);
     }
     wsCallbacks.close = (event: ICloseEvent) => {
-        onClose(event, dispatch)
+        onClose(event, dispatch);
     }
-    wsHandler.registerCallbacks(wsCallbacks)
+    wsCallbacks.error = onError;
+
+    wsHandler.registerCallbacks(wsCallbacks);
 }
 
 function onMessage(message: IMessageEvent, dispatch: Dispatch<AnyAction>, navigate: NavigateFunction) {
@@ -34,24 +34,24 @@ function onMessage(message: IMessageEvent, dispatch: Dispatch<AnyAction>, naviga
         case WebsocketResponse.BLANK:
             if (msg.action === WebsocketAction.MOVE && msg.position !== undefined) {
                 getDevMode() && console.log('WS -> MOVE');
-                dispatch(updatePosition(msg.position))
+                dispatch(updatePosition(msg.position));
             }
-            break
+            break;
         case WebsocketResponse.ERROR:
             getDevMode() && console.log('WS -> ERROR');
             if (msg.action === WebsocketAction.JOIN_ROOM) {
-                clearRecentData()
-                navigate("/") // TODO: find better solution for restarting (maybe popup with button)
+                clearRecentData();
+                navigate("/"); // TODO: find better solution for error handling
             }
-            break
+            break;
         case WebsocketResponse.OK:
             if (msg.action === WebsocketAction.CONNECT) {
                 dispatch(updateWsState(true));
                 getDevMode() && console.log('WS -> CONNECTION SUCCESSFUL');
-                break
+                break;
             }
             getDevMode() && console.log('WS -> OK');
-            break
+            break;
     }
 }
 
@@ -63,9 +63,9 @@ function onOpen(dispatch: Dispatch<AnyAction>) {
 function onClose(event: ICloseEvent, dispatch: Dispatch<AnyAction>) {
     getDevMode() && console.log('WS CALLBACK: CLOSE');
     getDevMode() && console.log('WS -> ' + event.code);
-    dispatch(updateWsState(false))
+    dispatch(updateWsState(false));
     setTimeout(function () {
-        wsHandler!.connect(wsCallbacks)
+        wsHandler!.connect(wsCallbacks);
         getDevMode() && console.log('WS TRY RECONNECT');
     }, 1000);
 }
