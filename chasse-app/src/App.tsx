@@ -1,15 +1,15 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
-import { Dispatch, useEffect } from 'react';
-import { AnyAction } from "@reduxjs/toolkit";
+import { Routes, Route, useNavigate, NavigateFunction } from "react-router-dom";
+import { useEffect } from 'react';
 import Home from './pages/home.page';
 import Game from './pages/game.page';
 import { setupWsApp } from "./socket/socket.setup";
 import { clearRecentData, getRecentSession } from "./utilities/storage.utility";
-import axios, { AxiosResponse } from "axios";
-import { getApiUrl, getAppVersion } from "./utilities/environment.utility";
+import { getAppVersion } from "./utilities/environment.utility";
 import { selectWsState, updateRecentSessionState, updateWindowProperties } from "./state/game/game.slice";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import InfoDialog from "./components/dialog.component";
+import { getSession } from "./api/api.session";
+import { AppDispatch } from "./state/store";
 
 
 export default function App() {
@@ -18,11 +18,7 @@ export default function App() {
     const wsState = useAppSelector(selectWsState);
 
     useEffect(() => {
-        console.log('APP VERSION:', getAppVersion())
-
-        setupWsApp(dispatch, navigate)
-        checkLastSession(dispatch)
-
+        prepareApplication(dispatch, navigate)
         let handleResize = () => dispatch(updateWindowProperties());
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
@@ -45,18 +41,21 @@ export default function App() {
     );
 }
 
-function checkLastSession(dispatch: Dispatch<AnyAction>) {
-    let recentSessionId = getRecentSession()
+function prepareApplication(dispatch: AppDispatch, navigate: NavigateFunction) {
+    console.log('APP VERSION:', getAppVersion())
 
-    // TODO: move all API requests
+    setupWsApp(dispatch, navigate)
+    
+    let recentSessionId = getRecentSession()
     if (recentSessionId !== null) {
-        axios
-            .get(getApiUrl() + "api/v1/session/" + recentSessionId)
-            .then((_: AxiosResponse) => {
+        getSession(recentSessionId, (session) => {
+            if (session !== undefined && session.sessionId === recentSessionId) {
                 dispatch(updateRecentSessionState(true))
-            })
-            .catch((_) => {
+            } else {
                 clearRecentData()
-            });
+            }
+        }, () => {
+            clearRecentData()
+        })
     }
 }

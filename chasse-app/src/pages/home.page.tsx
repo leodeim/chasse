@@ -1,13 +1,12 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { SiAddthis } from 'react-icons/si';
 import { MdOutlineOpenInNew } from 'react-icons/md';
 import { selectRecentSessionStatus, selectWindowMinDimension, updateSessionId } from '../state/game/game.slice';
 import { getRecentSession } from '../utilities/storage.utility';
-import { getApiUrl } from '../utilities/environment.utility';
 import './home.style.css';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
+import { newSession } from "../api/api.session";
 
 export default function Home() {
     const windowMinDimensions = useAppSelector(selectWindowMinDimension);
@@ -36,7 +35,7 @@ export default function Home() {
                 </div>
                 <div style={squareStyle} className='inner-shadow text-colorSecondary font-bold text-2xl sm:text-3xl md:text-4xl lg:text-5xl flex flex-col items-center justify-center break-words text-center select-none'>
                     <div className='w-1/2'>
-                        <img src="/logo.png" alt="chasse" />   
+                        <img src="/logo.png" alt="chasse" />
                     </div>
                 </div>
             </div>
@@ -63,17 +62,18 @@ export default function Home() {
 }
 
 function CreateSessionSquare(props) {
-    let createSession = () => {
-        axios
-            .get(getApiUrl() + "api/v1/session/new")
-            .then((response: any) => {
-                props.navigate("/board/" + response.data.sessionId)
+    let handler = () => {
+        newSession(
+            (id: string) => {
+                props.navigate("/board/" + id)
+            },
+            (err) => {
+                console.log(err)
             })
-            .catch((err) => console.log(err));
     }
 
     return (
-        <div onClick={() => createSession()} style={props.style} className='bg-colorSecondary hover:bg-colorSecondaryDark inner-shadow cursor-pointer text-colorMainDark font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
+        <div onClick={() => handler()} style={props.style} className='bg-colorSecondary hover:bg-colorSecondaryDark inner-shadow cursor-pointer text-colorMainDark font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
             <p className="pb-1">
                 NEW BOARD
             </p>
@@ -83,12 +83,12 @@ function CreateSessionSquare(props) {
 }
 
 function RecentSessionSquare(props) {
-    let openSession = () => {
+    let handler = () => {
         props.navigate("/board/" + props.recent);
     }
 
     return (
-        <div onClick={() => openSession()} style={props.style} className='hover:bg-colorMainDark inner-shadow cursor-pointer text-colorSecondary font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
+        <div onClick={() => handler()} style={props.style} className='hover:bg-colorMainDark inner-shadow cursor-pointer text-colorSecondary font-bold text-sm sm:text-xl flex flex-col items-center justify-center break-words text-center select-none'>
             <p className="pb-1">
                 OPEN LAST BOARD
             </p>
