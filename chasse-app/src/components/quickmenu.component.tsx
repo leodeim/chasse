@@ -10,7 +10,7 @@ export default function QuickMenu(props: QuickMenuProps) {
         />)
 
     return (
-        <Popover className="relative">
+        <Popover className="relative flex">
             {() => (
                 <>
                     <Popover.Button>

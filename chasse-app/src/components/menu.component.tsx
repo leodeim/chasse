@@ -19,10 +19,10 @@ export default function Menu() {
     return (
         <div className="flex sm:flex-col justify-center sm:mr-4 text-colorSecondary">
             <div className="flex sm:flex-col mb-4 pt-2 sm:mb-0 sm:pt-4 sm:pb-4 bg-colorMainDark rounded-full">
-                <Link to="/" className="sm:pb-4 pl-4 pr-4 sm:pl-2 sm:pr-2 sm:pt-2" onClick={() => { }}>
+                <Link to="/" className="sm:p-2 pb-2 pl-4" onClick={() => { }}>
                     <HomeIcon />
                 </Link>
-                <div className="pl-4 pr-4 sm:pl-2 sm:pr-2">
+                <div className="sm:p-2 pb-2 pl-4 pr-4">
                     <QuickMenu
                         direction={Direction.Down}
                         icon={<ShareIcon />}
