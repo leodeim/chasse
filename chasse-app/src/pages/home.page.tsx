@@ -1,19 +1,19 @@
-import { useDispatch, useSelector } from 'react-redux';
-import { selectRecentSessionStatus, selectWindowMinDimension, updateSessionId } from '../state/game/game.slice';
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { SiAddthis } from 'react-icons/si';
 import { MdOutlineOpenInNew } from 'react-icons/md';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { useEffect } from 'react';
+import { selectRecentSessionStatus, selectWindowMinDimension, updateSessionId } from '../state/game/game.slice';
 import { getRecentSession } from '../utilities/storage.utility';
-import './home.style.css';
 import { getApiUrl } from '../utilities/environment.utility';
+import './home.style.css';
+import { useAppDispatch, useAppSelector } from '../state/hooks';
 
 export default function Home() {
-    const windowMinDimensions = useSelector(selectWindowMinDimension);
-    const recentSessionAvailable = useSelector(selectRecentSessionStatus);
+    const windowMinDimensions = useAppSelector(selectWindowMinDimension);
+    const recentSessionAvailable = useAppSelector(selectRecentSessionStatus);
     const navigate = useNavigate();
-    const dispatch = useDispatch();
+    const dispatch = useAppDispatch();
     const recentSession = getRecentSession();
 
     const squareStyle = {
@@ -22,7 +22,7 @@ export default function Home() {
     }
 
     useEffect(() => {
-        dispatch(updateSessionId(""))
+        dispatch(updateSessionId(""));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -84,7 +84,7 @@ function CreateSessionSquare(props) {
 
 function RecentSessionSquare(props) {
     let openSession = () => {
-        props.navigate("/board/" + props.recent)
+        props.navigate("/board/" + props.recent);
     }
 
     return (

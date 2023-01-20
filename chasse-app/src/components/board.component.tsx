@@ -1,16 +1,16 @@
 import Chessboard from "@leonidasdeim/chessboardjsx";
 import { calculateMove, customPieces, Piece, Square } from "../utilities/chess.utility";
-import { useDispatch, useSelector } from "react-redux";
 import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectTabletMode, selectWindowMinDimension } from "../state/game/game.slice";
+import { useAppDispatch, useAppSelector } from "../state/hooks";
 
 
 export default function GameBoard(props: any) {
-    const dispatch = useDispatch();
-    const gamePosition = useSelector(selectGamePosition);
-    const boardOrientation = useSelector(selectBoardOrientation);
-    const windowMinDimensions = useSelector(selectWindowMinDimension);
-    const sessionId = useSelector(selectSessionId);
-    const tabletMode = useSelector(selectTabletMode);
+    const dispatch = useAppDispatch();
+    const gamePosition = useAppSelector(selectGamePosition);
+    const boardOrientation = useAppSelector(selectBoardOrientation);
+    const windowMinDimensions = useAppSelector(selectWindowMinDimension);
+    const sessionId = useAppSelector(selectSessionId);
+    const tabletMode = useAppSelector(selectTabletMode);
 
 
     let gamePositionCopy = {
