@@ -36,7 +36,7 @@ func FindOrCreateRoom(id string) *Room {
 			broadcast:  make(chan *BroadcastData),
 		}
 
-		go room.run()
+		go room.runner()
 	}
 
 	return room
@@ -55,7 +55,7 @@ func FindRoom(id string) *Room {
 	return nil
 }
 
-func (room *Room) run() {
+func (room *Room) runner() {
 	fmt.Printf("(Room %s) Runner is starting \n", room.SessionId)
 	activeRooms[room.SessionId] = room
 
@@ -79,8 +79,6 @@ func (room *Room) run() {
 			}
 
 		case data := <-room.broadcast:
-			// log.Printf("(Room %s) Message will be sent: %+v\n", room.SessionId, message)
-
 			for client := range room.clients {
 				if client == data.client {
 					continue

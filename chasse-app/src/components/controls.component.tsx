@@ -25,6 +25,7 @@ export default function Controls() {
 
     let boardActionButtons: QuickMenuButtonProps[] = [
         {
+            id: 1,
             text: "Clear",
             handler: () => {
                 let moveItem: MoveItem = {
@@ -35,6 +36,7 @@ export default function Controls() {
             }
         },
         {
+            id: 2,
             text: "Reset",
             handler: () => {
                 let moveItem: MoveItem = {
@@ -49,18 +51,18 @@ export default function Controls() {
     return (
         <div className="flex sm:flex-col justify-center sm:ml-4 text-colorMain">
             <div className="flex sm:flex-col mt-4 pb-2 sm:mt-0 sm:pt-4 sm:pb-4 bg-colorSecondary rounded-full">
-                <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2" onClick={() => goBack()}>
+                <button className="sm:p-2 pt-2 pl-4" onClick={() => goBack()}>
                     <BackIcon />
                 </button>
-                <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2" onClick={() => dispatch(reverseBoard())}>
+                <button className="sm:p-2 pt-2 pl-4" onClick={() => dispatch(reverseBoard())}>
                     <ReverseIcon />
                 </button>
-                <button className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2" onClick={() => dispatch(toggleTabletMode())}>
+                <button className="sm:p-2 pt-2 pl-4" onClick={() => dispatch(toggleTabletMode())}>
                     <TabletModeIcon />
                 </button>
-                <div className="pt-2 pl-4 pr-4 sm:pl-2 sm:pr-2 text-colorRed">
+                <div className="sm:p-2 pt-2 pl-4 pr-4 text-colorRed">
                     <QuickMenu
-                        direction={Direction.Up}
+                        direction={Direction.UpLeft}
                         icon={<MenuIcon />}
                         buttons={boardActionButtons}
                     />

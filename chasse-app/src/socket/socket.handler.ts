@@ -36,8 +36,8 @@ export class SocketHandler {
     }
 
     connect(callbacks: SocketCallbacks) {
-        getDevMode() && console.log('WS CONNECTING...');
-        this.client = new w3cwebsocket(getWebsocketUrl() + 'api/ws');
+        getDevMode() && console.log(`WS CONNECTING...`);
+        this.client = new w3cwebsocket(getWebsocketUrl() + `api/ws`);
         this.registerCallbacks(callbacks);
     }
 
@@ -60,7 +60,7 @@ export class SocketHandler {
             return;
         }
 
-        getDevMode() && console.log("WS <- MOVE")
+        getDevMode() && console.log(`WS <- MOVE`)
         let msg: WebsocketMessage = {
             action: WebsocketAction.MOVE,
             position: data.position,
@@ -74,7 +74,7 @@ export class SocketHandler {
             return false;
         }
 
-        getDevMode() && console.log("WS <- JOIN ROOM")
+        getDevMode() && console.log(`WS <- JOIN ROOM`)
         let msg: WebsocketMessage = {
             action: WebsocketAction.JOIN_ROOM,
             sessionId: sessionId
@@ -84,25 +84,25 @@ export class SocketHandler {
     }
 }
 
-interface messageReceiver {
+interface MessageReceiver {
     (message: IMessageEvent): void
 };
 
-interface openReceiver {
+interface OpenReceiver {
     (): void
 };
 
-interface closeReceiver {
+interface CloseReceiver {
     (event: ICloseEvent): void
 };
 
-interface errorReceiver {
+interface ErrorReceiver {
     (error: Error): void
 };
 
 export type SocketCallbacks = {
-    message?: messageReceiver
-    open?: openReceiver
-    close?: closeReceiver
-    error?: errorReceiver
+    message?: MessageReceiver
+    open?: OpenReceiver
+    close?: CloseReceiver
+    error?: ErrorReceiver
 }
