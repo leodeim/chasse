@@ -60,7 +60,7 @@ export default function Controls() {
                 </button>
                 <div className="sm:p-2 pt-2 pl-4 pr-4 text-colorRed">
                     <QuickMenu
-                        direction={Direction.Up}
+                        direction={Direction.UpRight}
                         icon={<MenuIcon />}
                         buttons={boardActionButtons}
                     />
