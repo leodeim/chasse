@@ -24,7 +24,7 @@ export default function Menu() {
                 </Link>
                 <div className="sm:p-2 pb-2 pl-4 pr-4">
                     <QuickMenu
-                        direction={Direction.Down}
+                        direction={Direction.DownRight}
                         icon={<ShareIcon />}
                         buttons={shareButton}
                     />

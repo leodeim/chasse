@@ -41,7 +41,7 @@ function QuickMenuButton(props: QuickMenuButtonProps) {
     return (
         <div className="relative grid gap-8 bg-colorMainLight p-4">
             <Popover.Button onClick={() => props.handler()}
-                className="-m-3 flex items-center rounded-lg p-2 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
+                className="-m-3 flex items-center rounded-lg p-2 pl-0 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
             >
                 <div className="ml-3">
                     <p className="text-sm font-medium text-gray-900">
@@ -54,8 +54,10 @@ function QuickMenuButton(props: QuickMenuButtonProps) {
 }
 
 export enum Direction {
-  Up = "absolute right-full bottom-full z-50 w-24",
-  Down = "absolute z-50 w-36"
+    UpRight = "absolute left-full bottom-full z-50 w-28",
+    UpLeft = "absolute right-full top-full z-50 w-28",
+    DownRight = "absolute left-full top-full z-50 w-28",
+    DownLeft = "absolute right-full top-full z-50 w-28"
 }
 
 export type QuickMenuProps = {
