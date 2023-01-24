@@ -25,6 +25,7 @@ export default function Controls() {
 
     let boardActionButtons: QuickMenuButtonProps[] = [
         {
+            id: 1,
             text: "Clear",
             handler: () => {
                 let moveItem: MoveItem = {
@@ -35,6 +36,7 @@ export default function Controls() {
             }
         },
         {
+            id: 2,
             text: "Reset",
             handler: () => {
                 let moveItem: MoveItem = {
@@ -60,7 +62,7 @@ export default function Controls() {
                 </button>
                 <div className="sm:p-2 pt-2 pl-4 pr-4 text-colorRed">
                     <QuickMenu
-                        direction={Direction.UpRight}
+                        direction={Direction.UpLeft}
                         icon={<MenuIcon />}
                         buttons={boardActionButtons}
                     />

@@ -50,7 +50,7 @@ export function customPieces(orientation: Orientation, tabletMode: boolean) {
         )
     }
 
-    wPieces.map((p) => {
+    wPieces.forEach((p) => {
         let shouldRotate: boolean = tabletMode && orientation === Orientation.black
         if (shouldRotate) {
             returnPieces[p] = ({ squareWidth }: { squareWidth: number }) => {
@@ -63,7 +63,7 @@ export function customPieces(orientation: Orientation, tabletMode: boolean) {
         }
         return null;
     });
-    bPieces.map((p) => {
+    bPieces.forEach((p) => {
         let shouldRotate: boolean = tabletMode && orientation === Orientation.white
         if (shouldRotate) {
             returnPieces[p] = ({ squareWidth }: { squareWidth: number }) => {

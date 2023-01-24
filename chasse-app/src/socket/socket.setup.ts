@@ -7,7 +7,7 @@ import { getDevMode } from "../utilities/environment.utility";
 import './socket.handler'
 import { AppDispatch } from '../state/store';
 
-var wsCallbacks: SocketCallbacks = {}
+let wsCallbacks: SocketCallbacks = {}
 
 export const wsHandler = new SocketHandler(wsCallbacks)
 
