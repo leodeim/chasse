@@ -28,7 +28,7 @@ func (h *ApiHandler) CreateSession(c *fiber.Ctx) error {
 		return c.Status(http.StatusInternalServerError).JSON(err)
 	}
 
-	return c.Status(http.StatusOK).JSON(session)
+	return c.Status(http.StatusCreated).JSON(session)
 }
 
 func (h *ApiHandler) GetSession(c *fiber.Ctx) error {

@@ -8,7 +8,7 @@ import { getAppVersion } from "./utilities/environment.utility";
 import { selectWsState, updateRecentSessionState, updateWindowProperties } from "./state/game/game.slice";
 import { useAppDispatch, useAppSelector } from "./state/hooks";
 import InfoDialog from "./components/dialog.component";
-import { getSession } from "./api/api.session";
+import { getSession, SessionData } from "./api/api.session";
 import { AppDispatch } from "./state/store";
 
 
@@ -42,18 +42,15 @@ export default function App() {
 }
 
 function prepareApplication(dispatch: AppDispatch, navigate: NavigateFunction) {
-    console.log('APP VERSION:', getAppVersion())
+    console.log(`APP VERSION:`, getAppVersion())
 
     setupWsApp(dispatch, navigate)
     
     let recentSessionId = getRecentSession()
     if (recentSessionId !== null) {
-        getSession(recentSessionId, (session) => {
-            if (session !== undefined && session.sessionId === recentSessionId) {
-                dispatch(updateRecentSessionState(true))
-            } else {
-                clearRecentData()
-            }
+        getSession(recentSessionId, (status: number, _: SessionData) => {
+            if (status === 200) dispatch(updateRecentSessionState(true))
+            else clearRecentData()
         }, () => {
             clearRecentData()
         })

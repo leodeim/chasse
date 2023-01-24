@@ -1,15 +1,28 @@
 import axios, { AxiosResponse } from "axios";
 import { getApiUrl } from "../utilities/environment.utility";
+import * as Joi from 'joi';
+
+export type SessionData = {
+    action?: number,
+    response?: number,
+    position: string,
+    sessionId: string
+}
 
 export function getSession(id: string, ok: Function, nok: Function) {
     axios
-        .get(getApiUrl() + "api/v1/session/" + id)
+        .get(getApiUrl() + `api/v1/session/` + id)
         .then((response: AxiosResponse) => {
-            if (response.status === 200) {
-                ok(response.data);
-            } else {
-                nok();
-            }
+            const schema = Joi.object({
+                action: Joi.number().optional(),
+                response: Joi.number().optional(),
+                position: Joi.string().required(),
+                sessionId: Joi.string().required()
+            });
+            const { error } = schema.validate(response.data);
+
+            if (error) nok(error, response.status);
+            else ok(response.status, response.data);
         })
         .catch((err) => {
             nok(err);
@@ -18,13 +31,18 @@ export function getSession(id: string, ok: Function, nok: Function) {
 
 export function newSession(ok: Function, nok: Function) {
     axios
-        .get(getApiUrl() + "api/v1/session/new")
+        .get(getApiUrl() + `api/v1/session/new`)
         .then((response: AxiosResponse) => {
-            if (response.data.sessionId !== undefined) {
-                ok(response.data.sessionId)
-            } else {
-                nok()
-            }
+            const schema = Joi.object({
+                action: Joi.number().optional(),
+                response: Joi.number().optional(),
+                position: Joi.string().required(),
+                sessionId: Joi.string().required()
+            });
+            const { error } = schema.validate(response.data);
+
+            if (error) nok(error, response.status);
+            else ok(response.status, response.data);
         })
         .catch((err) => nok(err));
 }
