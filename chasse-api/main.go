@@ -36,11 +36,11 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	socket.SetupSocket(app, store)
+	socket.InitClient(app, store)
 	api := api.NewApiHandler(store, c)
 	api.RegisterApiRoutes(app)
 
-	if err := app.Listen(fmt.Sprintf("%s:%s", "localhost", c.GetCfg().Port)); err != nil {
+	if err := app.Listen(fmt.Sprintf("%s:%s", c.GetCfg().Host, c.GetCfg().Port)); err != nil {
 		log.Panic(err)
 	}
 }

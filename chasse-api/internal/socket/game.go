@@ -42,7 +42,7 @@ func Move(data models.SessionActionMessage, client *Client, store *store.Store) 
 func JoinRoom(data models.SessionActionMessage, client *Client, store *store.Store) error {
 	log.Println(data)
 	if data.SessionId == "" {
-		return errors.New("sessionID is empty")
+		return errors.New("sessionId is empty")
 	}
 
 	// verify if session is registered
