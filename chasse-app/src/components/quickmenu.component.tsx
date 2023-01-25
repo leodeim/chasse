@@ -58,7 +58,7 @@ function QuickMenuButton(props: QuickMenuButtonProps) {
 
 export enum Direction {
     UpRight = "absolute left-full bottom-full z-50 w-28",
-    UpLeft = "absolute right-full top-full z-50 w-28",
+    UpLeft = "absolute right-full bottom-full z-50 w-28",
     DownRight = "absolute left-full top-full z-50 w-28",
     DownLeft = "absolute right-full top-full z-50 w-28"
 }
