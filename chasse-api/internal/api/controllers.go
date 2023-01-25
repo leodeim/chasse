@@ -3,6 +3,7 @@ package api
 import (
 	"net/http"
 
+	e "chasse-api/internal/error"
 	"chasse-api/internal/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -25,7 +26,7 @@ func (h *ApiHandler) HealthCheck(c *fiber.Ctx) error {
 func (h *ApiHandler) CreateSession(c *fiber.Ctx) error {
 	session, err := h.store.CreateSession(models.BLANK_BOARD)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(err)
+		return handleError(c, err)
 	}
 
 	return c.Status(http.StatusCreated).JSON(session)
@@ -34,12 +35,12 @@ func (h *ApiHandler) CreateSession(c *fiber.Ctx) error {
 func (h *ApiHandler) GetSession(c *fiber.Ctx) error {
 	uuid := c.Params("sessionId")
 	if uuid == "" {
-		return c.Status(http.StatusNotFound).JSON("sessionId not provided")
+		return handleError(c, e.BadRequest{Message: "sessionId not provided"})
 	}
 
 	session, err := h.store.GetSession(uuid)
 	if err != nil {
-		return c.Status(http.StatusNotFound).JSON(err)
+		return handleError(c, err)
 	}
 
 	return c.Status(http.StatusOK).JSON(session)
@@ -49,13 +50,26 @@ func (h *ApiHandler) UpdateSession(c *fiber.Ctx) error {
 	session := &models.SessionActionMessage{}
 
 	if err := c.BodyParser(&session); err != nil {
-		return err
+		return handleError(c, e.BadRequest{Message: "can't parse body"})
 	}
 
 	session, err := h.store.UpdateSession(session.SessionId, session.Position)
 	if err != nil {
-		return c.Status(http.StatusInternalServerError).JSON(err)
+		return handleError(c, err)
 	}
 
 	return c.Status(http.StatusOK).JSON(session)
+}
+
+func handleError(c *fiber.Ctx, err error) error {
+	switch err.(type) {
+	case *e.Internal:
+		return c.Status(http.StatusInternalServerError).JSON(err.Error())
+	case *e.NotFound:
+		return c.Status(http.StatusNotFound).JSON(err.Error())
+	case *e.BadRequest:
+		return c.Status(http.StatusBadRequest).JSON(err.Error())
+	default:
+		return c.Status(http.StatusInternalServerError).JSON(err.Error())
+	}
 }

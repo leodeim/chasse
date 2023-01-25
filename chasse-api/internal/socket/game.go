@@ -1,10 +1,10 @@
 package socket
 
 import (
-	"errors"
 	"fmt"
 	"log"
 
+	e "chasse-api/internal/error"
 	"chasse-api/internal/models"
 	"chasse-api/internal/store"
 )
@@ -17,7 +17,7 @@ func GameAction(data models.SessionActionMessage, client *Client, store *store.S
 		return JoinRoom(data, client, store)
 	default:
 		fmt.Printf("(Room %s) Bad action type: %d", data.SessionId, data.Action)
-		return errors.New("bad action type")
+		return e.BadRequest{Message: "bad action type"}
 	}
 }
 
@@ -26,14 +26,14 @@ func Move(data models.SessionActionMessage, client *Client, store *store.Store) 
 	if room != nil {
 		_, err := store.UpdateSession(data.SessionId, data.Position)
 		if err != nil {
-			return errors.New("error while updating session info")
+			return err
 		}
 		room.broadcast <- &BroadcastData{
 			message: &data,
 			client:  client,
 		}
 	} else {
-		return errors.New("room has not been found")
+		return e.BadRequest{Message: "room has not been found"}
 	}
 
 	return nil
@@ -42,7 +42,7 @@ func Move(data models.SessionActionMessage, client *Client, store *store.Store) 
 func JoinRoom(data models.SessionActionMessage, client *Client, store *store.Store) error {
 	log.Println(data)
 	if data.SessionId == "" {
-		return errors.New("sessionId is empty")
+		return e.BadRequest{Message: "sessionId is empty"}
 	}
 
 	// verify if session is registered
@@ -53,7 +53,7 @@ func JoinRoom(data models.SessionActionMessage, client *Client, store *store.Sto
 			client:  client,
 		}
 	} else {
-		return errors.New("error while retrieving session info")
+		return err
 	}
 
 	return nil

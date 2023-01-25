@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"chasse-api/internal/config"
+	e "chasse-api/internal/error"
 	"chasse-api/internal/models"
 
 	"github.com/go-redis/redis"
@@ -21,11 +22,11 @@ type Store struct {
 }
 
 func NewStore(c *goconfig.Config[config.Type]) *Store {
-	c.AddSubscriber(MODULE_NAME)
 	s := Store{
 		config: c,
 	}
-	s.reconfigure()
+
+	s.config.AddSubscriber(MODULE_NAME)
 	go s.configRunner()
 
 	return &s
@@ -42,8 +43,8 @@ func (s *Store) reconfigure() {
 
 func (s *Store) configRunner() {
 	for {
-		<-s.config.GetSubscriber(MODULE_NAME)
 		s.reconfigure()
+		<-s.config.GetSubscriber(MODULE_NAME)
 	}
 }
 
@@ -55,11 +56,11 @@ func (s *Store) CreateSession(position string) (*models.SessionActionMessage, er
 func (s *Store) UpdateSession(uuid string, position string) (*models.SessionActionMessage, error) {
 	positionString, err := json.Marshal(position)
 	if err != nil {
-		return nil, err
+		return nil, e.Internal{Message: fmt.Sprintf("failed while marshal position string: %v", err)}
 	}
 
 	if err := s.db.Set("ses:"+uuid, positionString, 24*time.Hour).Err(); err != nil {
-		return nil, err
+		return nil, e.Internal{Message: fmt.Sprintf("failed while writing to storage: %v", err)}
 	}
 
 	return &models.SessionActionMessage{
@@ -71,12 +72,12 @@ func (s *Store) UpdateSession(uuid string, position string) (*models.SessionActi
 func (s *Store) GetSession(uuid string) (*models.SessionActionMessage, error) {
 	data, err := s.db.Get("ses:" + uuid).Result()
 	if err != nil {
-		return nil, err
+		return nil, e.NotFound{Message: fmt.Sprintf("failed while reading from storage: %v", err)}
 	}
 
 	var position string
 	if err := json.Unmarshal([]byte(data), &position); err != nil {
-		return nil, err
+		return nil, e.Internal{Message: fmt.Sprintf("failed while unmarshal position string: %v", err)}
 	}
 
 	return &models.SessionActionMessage{
