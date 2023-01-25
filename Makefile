@@ -67,8 +67,10 @@ deploy: deploy-api deploy-app
 
 build-deploy: build deploy
 
-api-health:
-	./misc/scripts/check_health.sh ${GIT_SHA} ${HEALTH_URL}
+health-api:
+	./misc/scripts/check-health-api.sh ${GIT_SHA} ${HEALTH_URL}
 
-git_sha:
-	@echo ${GIT_SHA}
+health-app:
+	./misc/scripts/check-health-app.sh 200 ${APP_URL}
+
+health: health-api health-app
