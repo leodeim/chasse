@@ -54,10 +54,12 @@ run: run-api run-app
 deploy-api:
 	scp build/${API_FILE_NAME} root@${SERVER_URL}:~/bin
 	ssh root@${SERVER_URL} "./deploy-api.sh bin/${API_FILE_NAME}"
+	misc/scripts/deploy-notifier.sh ${AIRBRAKE_ID} ${AIRBRAKE_KEY} api ${GIT_SHA}
 
 deploy-app:
 	scp build/${APP_FILE_NAME} root@${SERVER_URL}:~/bin
 	ssh root@${SERVER_URL} "./deploy-app.sh bin/${APP_FILE_NAME}"
+	misc/scripts/deploy-notifier.sh ${AIRBRAKE_ID} ${AIRBRAKE_KEY} app ${GIT_SHA}
 
 build-deploy-api: build-api deploy-api
 
