@@ -8,28 +8,28 @@ import (
 	"chasse-api/internal/models"
 )
 
-func GameAction(data models.SessionActionMessage, c *ClientHandler) error {
+func GameAction(data models.SessionActionMessage, h *SocketHandler) error {
 	switch data.Action {
 	case models.MOVE:
-		return Move(data, c)
+		return Move(data, h)
 	case models.JOIN_ROOM:
-		return JoinRoom(data, c)
+		return JoinRoom(data, h)
 	default:
 		fmt.Printf("(Room %s) Bad action type: %d", data.SessionId, data.Action)
 		return e.BadRequest{Message: "bad action type"}
 	}
 }
 
-func Move(data models.SessionActionMessage, c *ClientHandler) error {
+func Move(data models.SessionActionMessage, h *SocketHandler) error {
 	room := FindRoom(data.SessionId)
 	if room != nil {
-		_, err := c.store.UpdateSession(data.SessionId, data.Position)
+		_, err := h.store.UpdateSession(data.SessionId, data.Position)
 		if err != nil {
 			return err
 		}
 		room.broadcast <- &BroadcastData{
 			message: &data,
-			client:  c,
+			client:  h.client,
 		}
 	} else {
 		return e.BadRequest{Message: "room has not been found"}
@@ -38,18 +38,18 @@ func Move(data models.SessionActionMessage, c *ClientHandler) error {
 	return nil
 }
 
-func JoinRoom(data models.SessionActionMessage, c *ClientHandler) error {
+func JoinRoom(data models.SessionActionMessage, h *SocketHandler) error {
 	log.Println(data)
 	if data.SessionId == "" {
 		return e.BadRequest{Message: "sessionId is empty"}
 	}
 
 	// verify if session is registered
-	if session, err := c.store.GetSession(data.SessionId); err == nil {
+	if session, err := h.store.GetSession(data.SessionId); err == nil {
 		room := FindOrCreateRoom(data.SessionId)
 		room.register <- &BroadcastData{
 			message: session,
-			client:  c,
+			client:  h.client,
 		}
 	} else {
 		return err
