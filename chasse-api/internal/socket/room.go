@@ -11,15 +11,15 @@ import (
 
 type Room struct {
 	SessionId  string `json:"id"`
-	clients    map[*Client]bool
+	clients    map[*ClientHandler]bool
 	register   chan *BroadcastData
-	unregister chan *Client
+	unregister chan *ClientHandler
 	broadcast  chan *BroadcastData
 }
 
 type BroadcastData struct {
 	message *models.SessionActionMessage
-	client  *Client
+	client  *ClientHandler
 }
 
 var activeRooms = make(map[string]*Room)
@@ -30,9 +30,9 @@ func FindOrCreateRoom(id string) *Room {
 	if room == nil {
 		room = &Room{
 			SessionId:  id,
-			clients:    make(map[*Client]bool),
+			clients:    make(map[*ClientHandler]bool),
 			register:   make(chan *BroadcastData),
-			unregister: make(chan *Client),
+			unregister: make(chan *ClientHandler),
 			broadcast:  make(chan *BroadcastData),
 		}
 
@@ -42,7 +42,7 @@ func FindOrCreateRoom(id string) *Room {
 	return room
 }
 
-func RemoveClientFromRoom(client *Client) {
+func RemoveClientFromRoom(client *ClientHandler) {
 	if room := FindRoom(client.sessionId); room != nil {
 		room.unregister <- client
 	}

@@ -7,21 +7,24 @@ import (
 	"chasse-api/internal/models"
 	"chasse-api/internal/store"
 
+	"github.com/airbrake/gobrake/v5"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )
 
-type Client struct {
+type ClientHandler struct {
 	conn      *websocket.Conn
-	store     *store.Store
 	sessionId string
+	notifier  *gobrake.Notifier
+	store     *store.Store
 }
 
-func InitClient(app *fiber.App, store *store.Store) {
+func InitClient(app *fiber.App, s *store.Store, n *gobrake.Notifier) {
 	app.Get("/api/ws", websocket.New(func(conn *websocket.Conn) {
-		c := &Client{
-			conn:  conn,
-			store: store,
+		c := &ClientHandler{
+			conn:     conn,
+			notifier: n,
+			store:    s,
 		}
 
 		log.Printf("(Client %s) Logged in\n", c.conn.RemoteAddr())
@@ -46,7 +49,7 @@ func InitClient(app *fiber.App, store *store.Store) {
 					c.respondError(models.BLANK_ACTION, err)
 					continue
 				}
-				if err := GameAction(*message, c, store); err != nil {
+				if err := GameAction(*message, c); err != nil {
 					c.respondError(message.Action, err)
 					continue
 				}
@@ -57,12 +60,13 @@ func InitClient(app *fiber.App, store *store.Store) {
 	}))
 }
 
-func (c *Client) respondOk(action models.WebsocketAction) {
+func (c *ClientHandler) respondOk(action models.WebsocketAction) {
 	msg := models.OkMessage(action)
 	c.conn.WriteMessage(websocket.TextMessage, msg.Encode())
 }
 
-func (c *Client) respondError(action models.WebsocketAction, err error) {
+func (c *ClientHandler) respondError(action models.WebsocketAction, err error) {
+	c.notifier.Notify(err, nil) // send error to airbrake
 	errorMsg := models.ErrorMessage(action)
 	c.conn.WriteMessage(websocket.TextMessage, errorMsg.Encode())
 	log.Printf("(Client %s) Error: %s \n", c.conn.LocalAddr(), err.Error())

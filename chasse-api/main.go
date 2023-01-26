@@ -49,7 +49,7 @@ func main() {
 		app.Use(fiberbrake.New(notifier))
 	}
 
-	socket.InitClient(app, store)
+	socket.InitClient(app, store, notifier)
 	api := api.NewApiHandler(store, c, notifier)
 	api.RegisterApiRoutes(app)
 
