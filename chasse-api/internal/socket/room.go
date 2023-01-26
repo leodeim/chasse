@@ -1,7 +1,6 @@
 package socket
 
 import (
-	"fmt"
 	"log"
 
 	"chasse-api/internal/models"
@@ -56,11 +55,11 @@ func FindRoom(id string) *Room {
 }
 
 func (room *Room) runner() {
-	fmt.Printf("(Room %s) Runner is starting \n", room.SessionId)
+	log.Printf("(Room %s) Runner is starting \n", room.SessionId)
 	activeRooms[room.SessionId] = room
 
 	defer func() {
-		fmt.Printf("(Room %s) Runner is stopping \n", room.SessionId)
+		log.Printf("(Room %s) Runner is stopping \n", room.SessionId)
 		delete(activeRooms, room.SessionId)
 	}()
 
@@ -72,10 +71,14 @@ func (room *Room) runner() {
 				SessionId: data.message.SessionId,
 				Position:  data.message.Position,
 			}
-			if err := data.client.conn.WriteMessage(websocket.TextMessage, message.Encode()); err == nil {
-				data.client.sessionId = room.SessionId
-				room.clients[data.client] = true
+			client := data.client
+			if err := client.conn.WriteMessage(websocket.TextMessage, message.Encode()); err == nil {
+				client.sessionId = room.SessionId
+				room.clients[client] = true
 				log.Printf("(Room %s) Client registered, clients in the room: %d \n", room.SessionId, len(room.clients))
+			} else {
+				log.Printf("(Room %s) WebSocket write error: %v", room.SessionId, err)
+				client.monitor.Notify(err)
 			}
 
 		case data := <-room.broadcast:
@@ -85,6 +88,7 @@ func (room *Room) runner() {
 				}
 				if err := client.conn.WriteMessage(websocket.TextMessage, data.message.Encode()); err != nil {
 					log.Printf("(Room %s) WebSocket write error: %v", room.SessionId, err)
+					client.monitor.Notify(err)
 
 					client.conn.WriteMessage(websocket.CloseMessage, []byte{})
 					client.conn.Close()

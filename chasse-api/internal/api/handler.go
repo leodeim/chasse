@@ -2,6 +2,7 @@ package api
 
 import (
 	"chasse-api/internal/config"
+	"chasse-api/internal/monitoring"
 	"chasse-api/internal/store"
 
 	"github.com/gofiber/fiber/v2"
@@ -9,14 +10,16 @@ import (
 )
 
 type ApiHandler struct {
-	config *goconfig.Config[config.Type]
-	store  *store.Store
+	config  *goconfig.Config[config.Type]
+	store   *store.Type
+	monitor *monitoring.Type
 }
 
-func NewApiHandler(s *store.Store, c *goconfig.Config[config.Type]) *ApiHandler {
+func NewApiHandler(s *store.Type, c *goconfig.Config[config.Type], m *monitoring.Type) *ApiHandler {
 	return &ApiHandler{
-		store:  s,
-		config: c,
+		store:   s,
+		config:  c,
+		monitor: m,
 	}
 }
 

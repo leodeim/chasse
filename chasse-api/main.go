@@ -6,6 +6,7 @@ import (
 
 	"chasse-api/internal/api"
 	"chasse-api/internal/config"
+	"chasse-api/internal/monitoring"
 	"chasse-api/internal/socket"
 	"chasse-api/internal/store"
 
@@ -25,7 +26,9 @@ func main() {
 	}
 
 	app := fiber.New()
-	store := store.NewStore(c)
+	s := store.Init(c)
+	m := monitoring.Init(app, c)
+	defer m.Close()
 
 	app.Static("/", "./assets")
 	app.Use(recover.New())
@@ -36,8 +39,8 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	socket.InitClient(app, store)
-	api := api.NewApiHandler(store, c)
+	socket.InitClient(app, s, m)
+	api := api.NewApiHandler(s, c, m)
 	api.RegisterApiRoutes(app)
 
 	if err := app.Listen(fmt.Sprintf("%s:%s", c.GetCfg().Host, c.GetCfg().Port)); err != nil {

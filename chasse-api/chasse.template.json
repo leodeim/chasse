@@ -6,5 +6,10 @@
         "host": "localhost",
         "port": "6381",
         "password": ""
-    }
+    },
+    "monitoring": {
+		"id": 0,
+		"Key": "",
+		"environment": "development"
+	}
 }

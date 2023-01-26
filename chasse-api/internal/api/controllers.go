@@ -26,7 +26,7 @@ func (h *ApiHandler) HealthCheck(c *fiber.Ctx) error {
 func (h *ApiHandler) CreateSession(c *fiber.Ctx) error {
 	session, err := h.store.CreateSession(models.BLANK_BOARD)
 	if err != nil {
-		return handleError(c, err)
+		return h.handleError(c, err)
 	}
 
 	return c.Status(http.StatusCreated).JSON(session)
@@ -35,12 +35,12 @@ func (h *ApiHandler) CreateSession(c *fiber.Ctx) error {
 func (h *ApiHandler) GetSession(c *fiber.Ctx) error {
 	uuid := c.Params("sessionId")
 	if uuid == "" {
-		return handleError(c, e.BadRequest{Message: "sessionId not provided"})
+		return h.handleError(c, e.BadRequest{Message: "sessionId not provided"})
 	}
 
 	session, err := h.store.GetSession(uuid)
 	if err != nil {
-		return handleError(c, err)
+		return h.handleError(c, err)
 	}
 
 	return c.Status(http.StatusOK).JSON(session)
@@ -50,24 +50,25 @@ func (h *ApiHandler) UpdateSession(c *fiber.Ctx) error {
 	session := &models.SessionActionMessage{}
 
 	if err := c.BodyParser(&session); err != nil {
-		return handleError(c, e.BadRequest{Message: "can't parse body"})
+		return h.handleError(c, e.BadRequest{Message: "can't parse body"})
 	}
 
 	session, err := h.store.UpdateSession(session.SessionId, session.Position)
 	if err != nil {
-		return handleError(c, err)
+		return h.handleError(c, err)
 	}
 
 	return c.Status(http.StatusOK).JSON(session)
 }
 
-func handleError(c *fiber.Ctx, err error) error {
+func (h *ApiHandler) handleError(c *fiber.Ctx, err error) error {
+	h.monitor.Notify(err)
 	switch err.(type) {
-	case *e.Internal:
+	case e.Internal:
 		return c.Status(http.StatusInternalServerError).JSON(err.Error())
-	case *e.NotFound:
+	case e.NotFound:
 		return c.Status(http.StatusNotFound).JSON(err.Error())
-	case *e.BadRequest:
+	case e.BadRequest:
 		return c.Status(http.StatusBadRequest).JSON(err.Error())
 	default:
 		return c.Status(http.StatusInternalServerError).JSON(err.Error())
