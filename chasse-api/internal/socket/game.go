@@ -1,11 +1,9 @@
 package socket
 
 import (
-	"fmt"
-	"log"
-
 	e "chasse-api/internal/error"
 	"chasse-api/internal/models"
+	"log"
 )
 
 func GameAction(data models.SessionActionMessage, h *SocketHandler) error {
@@ -15,7 +13,7 @@ func GameAction(data models.SessionActionMessage, h *SocketHandler) error {
 	case models.JOIN_ROOM:
 		return JoinRoom(data, h)
 	default:
-		fmt.Printf("(Room %s) Bad action type: %d", data.SessionId, data.Action)
+		log.Printf("(Room %s) Bad action type: %d", data.SessionId, data.Action)
 		return e.BadRequest{Message: "bad action type"}
 	}
 }
@@ -39,7 +37,6 @@ func Move(data models.SessionActionMessage, h *SocketHandler) error {
 }
 
 func JoinRoom(data models.SessionActionMessage, h *SocketHandler) error {
-	log.Println(data)
 	if data.SessionId == "" {
 		return e.BadRequest{Message: "sessionId is empty"}
 	}

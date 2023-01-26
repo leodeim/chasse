@@ -1,7 +1,6 @@
 package socket
 
 import (
-	"fmt"
 	"log"
 
 	"chasse-api/internal/models"
@@ -56,11 +55,11 @@ func FindRoom(id string) *Room {
 }
 
 func (room *Room) runner() {
-	fmt.Printf("(Room %s) Runner is starting \n", room.SessionId)
+	log.Printf("(Room %s) Runner is starting \n", room.SessionId)
 	activeRooms[room.SessionId] = room
 
 	defer func() {
-		fmt.Printf("(Room %s) Runner is stopping \n", room.SessionId)
+		log.Printf("(Room %s) Runner is stopping \n", room.SessionId)
 		delete(activeRooms, room.SessionId)
 	}()
 
