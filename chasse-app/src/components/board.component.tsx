@@ -2,6 +2,7 @@ import Chessboard from "@leonidasdeim/chessboardjsx";
 import { calculateMove, customPieces, Piece, Square } from "../utilities/chess.utility";
 import { makeMove, selectBoardOrientation, selectGamePosition, selectSessionId, selectTabletMode, selectWindowMinDimension } from "../state/game/game.slice";
 import { useAppDispatch, useAppSelector } from "../state/hooks";
+import { useCallback } from "react";
 
 
 export default function GameBoard(props: any) {
@@ -17,18 +18,19 @@ export default function GameBoard(props: any) {
         ...gamePosition
     };
 
-    function onDrop(obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }) {
-        let newGamePosition = calculateMove(obj, gamePosition)
+    const onDrop = useCallback(
+        (obj: { sourceSquare: Square, targetSquare: Square, piece: Piece }) => { 
+            let newGamePosition = calculateMove(obj, gamePosition)
 
-        if (newGamePosition !== null) {
-            dispatch(makeMove({
-                position: newGamePosition,
-                sessionId: sessionId
-            }));
-        }
-
-        return true;
-    }
+            if (newGamePosition !== null) {
+                dispatch(makeMove({
+                    position: newGamePosition,
+                    sessionId: sessionId
+                }));
+            }
+    
+            return true;
+        }, [dispatch, gamePosition, sessionId]);
 
     return (
         <div>

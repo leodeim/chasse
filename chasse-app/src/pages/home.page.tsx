@@ -6,7 +6,7 @@ import { selectRecentSessionStatus, selectWindowMinDimension, updateSessionId } 
 import { getRecentSession } from '../utilities/storage.utility';
 import './home.style.css';
 import { useAppDispatch, useAppSelector } from '../state/hooks';
-import { newSession } from "../api/api.session";
+import { newSession, SessionData } from "../api/api.session";
 
 export default function Home() {
     const windowMinDimensions = useAppSelector(selectWindowMinDimension);
@@ -21,7 +21,7 @@ export default function Home() {
     }
 
     useEffect(() => {
-        dispatch(updateSessionId(""));
+        dispatch(updateSessionId(''));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -64,8 +64,9 @@ export default function Home() {
 function CreateSessionSquare(props) {
     let handler = () => {
         newSession(
-            (id: string) => {
-                props.navigate("/board/" + id)
+            (status: number, session: SessionData) => {
+                if (status === 201) props.navigate(`/board/` + session.sessionId)
+                else console.log(`can't create session, internal error: ` + status)
             },
             (err) => {
                 console.log(err)
@@ -84,7 +85,7 @@ function CreateSessionSquare(props) {
 
 function RecentSessionSquare(props) {
     let handler = () => {
-        props.navigate("/board/" + props.recent);
+        props.navigate(`/board/` + props.recent);
     }
 
     return (

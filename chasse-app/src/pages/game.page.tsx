@@ -17,7 +17,7 @@ export default function Game() {
 
     useEffect(() => {
         if (sessionId === undefined) {
-            navigate("/");
+            navigate('/');
         }
         if (wsState === true && sessionId !== undefined) {
             dispatch(updateSessionId(sessionId));

@@ -9,6 +9,8 @@ import (
 	"chasse-api/internal/socket"
 	"chasse-api/internal/store"
 
+	"github.com/airbrake/gobrake/v5"
+	fiberbrake "github.com/airbrake/gobrake/v5/fiber"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -24,6 +26,13 @@ func main() {
 		log.Panicf("Configuration error: %v", err)
 	}
 
+	notifier := gobrake.NewNotifierWithOptions(&gobrake.NotifierOptions{
+		ProjectId:   c.GetCfg().Monitoring.Id,
+		ProjectKey:  c.GetCfg().Monitoring.Key,
+		Environment: c.GetCfg().Monitoring.Environment,
+	})
+	defer notifier.Close()
+
 	app := fiber.New()
 	store := store.NewStore(c)
 
@@ -36,11 +45,15 @@ func main() {
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	socket.SetupSocket(app, store)
-	api := api.NewApiHandler(store, c)
+	if c.GetCfg().Monitoring.Key != "" {
+		app.Use(fiberbrake.New(notifier))
+	}
+
+	socket.InitClient(app, store, notifier)
+	api := api.NewApiHandler(store, c, notifier)
 	api.RegisterApiRoutes(app)
 
-	if err := app.Listen(fmt.Sprintf("%s:%s", "localhost", c.GetCfg().Port)); err != nil {
+	if err := app.Listen(fmt.Sprintf("%s:%s", c.GetCfg().Host, c.GetCfg().Port)); err != nil {
 		log.Panic(err)
 	}
 }

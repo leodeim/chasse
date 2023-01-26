@@ -54,10 +54,12 @@ run: run-api run-app
 deploy-api:
 	scp build/${API_FILE_NAME} root@${SERVER_URL}:~/bin
 	ssh root@${SERVER_URL} "./deploy-api.sh bin/${API_FILE_NAME}"
+	misc/scripts/deploy-notifier.sh ${AIRBRAKE_ID} ${AIRBRAKE_KEY} api ${GIT_SHA}
 
 deploy-app:
 	scp build/${APP_FILE_NAME} root@${SERVER_URL}:~/bin
 	ssh root@${SERVER_URL} "./deploy-app.sh bin/${APP_FILE_NAME}"
+	misc/scripts/deploy-notifier.sh ${AIRBRAKE_ID} ${AIRBRAKE_KEY} app ${GIT_SHA}
 
 build-deploy-api: build-api deploy-api
 
@@ -67,8 +69,10 @@ deploy: deploy-api deploy-app
 
 build-deploy: build deploy
 
-api-health:
-	./misc/scripts/check_health.sh ${GIT_SHA} ${HEALTH_URL}
+health-api:
+	./misc/scripts/check-health-api.sh ${GIT_SHA} ${HEALTH_URL}
 
-git_sha:
-	@echo ${GIT_SHA}
+health-app:
+	./misc/scripts/check-health-app.sh 200 ${APP_URL}
+
+health: health-api health-app

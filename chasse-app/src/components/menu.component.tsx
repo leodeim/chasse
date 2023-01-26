@@ -11,6 +11,7 @@ export default function Menu() {
 
     let shareButton: QuickMenuButtonProps[] = [
         {
+            id: 1,
             text: "Copy link",
             handler: () => copyToClipboard(getApiUrl() + "board/" + sessionId),
         },
@@ -19,7 +20,7 @@ export default function Menu() {
     return (
         <div className="flex sm:flex-col justify-center sm:mr-4 text-colorSecondary">
             <div className="flex sm:flex-col mb-4 pt-2 sm:mb-0 sm:pt-4 sm:pb-4 bg-colorMainDark rounded-full">
-                <Link to="/" className="sm:p-2 pb-2 pl-4" onClick={() => { }}>
+                <Link to="/" className="sm:p-2 pb-2 pl-4">
                     <HomeIcon />
                 </Link>
                 <div className="sm:p-2 pb-2 pl-4 pr-4">

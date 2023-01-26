@@ -36,7 +36,7 @@ func FindOrCreateRoom(id string) *Room {
 			broadcast:  make(chan *BroadcastData),
 		}
 
-		go room.run()
+		go room.runner()
 	}
 
 	return room
@@ -55,7 +55,7 @@ func FindRoom(id string) *Room {
 	return nil
 }
 
-func (room *Room) run() {
+func (room *Room) runner() {
 	fmt.Printf("(Room %s) Runner is starting \n", room.SessionId)
 	activeRooms[room.SessionId] = room
 
@@ -72,21 +72,24 @@ func (room *Room) run() {
 				SessionId: data.message.SessionId,
 				Position:  data.message.Position,
 			}
-			if err := data.client.conn.WriteMessage(websocket.TextMessage, message.Encode()); err == nil {
-				data.client.sessionId = room.SessionId
-				room.clients[data.client] = true
+			client := data.client
+			if err := client.conn.WriteMessage(websocket.TextMessage, message.Encode()); err == nil {
+				client.sessionId = room.SessionId
+				room.clients[client] = true
 				log.Printf("(Room %s) Client registered, clients in the room: %d \n", room.SessionId, len(room.clients))
+			} else {
+				log.Printf("(Room %s) WebSocket write error: %v", room.SessionId, err)
+				client.notifier.Notify(err, nil) // send error to airbrake
 			}
 
 		case data := <-room.broadcast:
-			// log.Printf("(Room %s) Message will be sent: %+v\n", room.SessionId, message)
-
 			for client := range room.clients {
 				if client == data.client {
 					continue
 				}
 				if err := client.conn.WriteMessage(websocket.TextMessage, data.message.Encode()); err != nil {
 					log.Printf("(Room %s) WebSocket write error: %v", room.SessionId, err)
+					client.notifier.Notify(err, nil) // send error to airbrake
 
 					client.conn.WriteMessage(websocket.CloseMessage, []byte{})
 					client.conn.Close()

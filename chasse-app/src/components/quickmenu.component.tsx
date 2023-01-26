@@ -1,10 +1,11 @@
 import { Popover, Transition } from "@headlessui/react";
-import { Fragment } from "react";
+import { Fragment, useCallback } from "react";
 
 export default function QuickMenu(props: QuickMenuProps) {
     const list = props.buttons.map((button, key)=> 
         <QuickMenuButton
-            key={key}
+            key={button.id}
+            id={button.id}
             handler={button.handler}
             text={button.text}
         />)
@@ -38,9 +39,11 @@ export default function QuickMenu(props: QuickMenuProps) {
 }
 
 function QuickMenuButton(props: QuickMenuButtonProps) {
+    let handle = useCallback(() => { props.handler() }, [props])
+
     return (
         <div className="relative grid gap-8 bg-colorMainLight p-4">
-            <Popover.Button onClick={() => props.handler()}
+            <Popover.Button onClick={handle}
                 className="-m-3 flex items-center rounded-lg p-2 pl-0 transition duration-150 ease-in-out hover:bg-gray-50 focus:outline-none focus-visible:ring focus-visible:ring-orange-500 focus-visible:ring-opacity-50"
             >
                 <div className="ml-3">
@@ -55,7 +58,7 @@ function QuickMenuButton(props: QuickMenuButtonProps) {
 
 export enum Direction {
     UpRight = "absolute left-full bottom-full z-50 w-28",
-    UpLeft = "absolute right-full top-full z-50 w-28",
+    UpLeft = "absolute right-full bottom-full z-50 w-28",
     DownRight = "absolute left-full top-full z-50 w-28",
     DownLeft = "absolute right-full top-full z-50 w-28"
 }
@@ -67,6 +70,7 @@ export type QuickMenuProps = {
 }
 
 export type QuickMenuButtonProps = {
+    id: number
     text: string
     handler: Function
 }
