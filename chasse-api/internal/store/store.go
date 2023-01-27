@@ -26,6 +26,8 @@ func Init(c *goconfig.Config[config.Type]) *Type {
 		config: c,
 	}
 
+	s.configure()
+
 	s.config.AddSubscriber(MODULE_NAME)
 	go s.configRunner()
 
@@ -43,8 +45,8 @@ func (s *Type) configure() {
 
 func (s *Type) configRunner() {
 	for {
-		s.configure()
 		<-s.config.GetSubscriber(MODULE_NAME)
+		s.configure()
 	}
 }
 

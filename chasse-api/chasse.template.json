@@ -1,6 +1,7 @@
 {
     "name": "chasse",
     "version": "dev",
+    "prefork": false,
     "port": "8085",
     "store": {
         "host": "localhost",
