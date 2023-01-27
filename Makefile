@@ -1,19 +1,22 @@
 include .env
 
+.DEFAULT_GOAL := build
+
 API=chasse-api
 APP=chasse-app
 BUILD_DIR=build
+
 GIT_SHA_FETCH := $(shell git rev-parse HEAD | cut -c 1-8)
 export GIT_SHA=$(GIT_SHA_FETCH)
 API_FILE_NAME=${API}-${GIT_SHA}
 APP_FILE_NAME=${APP}-${GIT_SHA}.tar.gz
-HEALTH=
 
 .PHONY: clean
 clean:
 	docker-compose down
 	if [ -d ${APP}/${BUILD_DIR} ] ; then rm -rf ${APP}/${BUILD_DIR} ; fi
 	if [ -d ${API}/${BUILD_DIR} ] ; then rm -rf ${API}/${BUILD_DIR} ; fi
+	if [ -d ${API}/db ] ; then rm -rf ${API}/db ; fi
 	if [ -d ${BUILD_DIR} ] ; then rm -rf ${BUILD_DIR} ; fi
 
 .PHONY: build-app
@@ -53,8 +56,7 @@ run-api:
 	cd ${API};\
 	if ! [ -d ${BUILD_DIR} ] ; then mkdir ${BUILD_DIR} ; fi;\
 	go mod tidy;\
-	go build -o build/${API} .;\
-	./${BUILD_DIR}/${API};
+	air -c .air.toml
 
 .PHONY: run
 run: run-api run-app
