@@ -62,7 +62,7 @@ func (h *ApiHandler) UpdateSession(c *fiber.Ctx) error {
 }
 
 func (h *ApiHandler) handleError(c *fiber.Ctx, err error) error {
-	h.notifier.Notify(err, nil) // send error to airbrake
+	h.monitor.Notify(err)
 	switch err.(type) {
 	case e.Internal:
 		return c.Status(http.StatusInternalServerError).JSON(err.Error())

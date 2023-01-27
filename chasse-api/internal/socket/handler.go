@@ -5,9 +5,9 @@ import (
 	"log"
 
 	"chasse-api/internal/models"
+	"chasse-api/internal/monitoring"
 	"chasse-api/internal/store"
 
-	"github.com/airbrake/gobrake/v5"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"
 )
@@ -15,20 +15,20 @@ import (
 type Client struct {
 	conn      *websocket.Conn
 	sessionId string
-	notifier  *gobrake.Notifier
+	monitor   *monitoring.Type
 }
 
 type SocketHandler struct {
 	client *Client
-	store  *store.Store
+	store  *store.Type
 }
 
-func InitClient(app *fiber.App, s *store.Store, n *gobrake.Notifier) {
+func InitClient(app *fiber.App, s *store.Type, m *monitoring.Type) {
 	app.Get("/api/ws", websocket.New(func(c *websocket.Conn) {
 		h := &SocketHandler{
 			client: &Client{
-				conn:     c,
-				notifier: n,
+				conn:    c,
+				monitor: m,
 			},
 			store: s,
 		}
@@ -72,7 +72,7 @@ func (h *SocketHandler) respondOk(action models.WebsocketAction) {
 }
 
 func (h *SocketHandler) respondError(action models.WebsocketAction, err error) {
-	h.client.notifier.Notify(err, nil) // send error to airbrake
+	h.client.monitor.Notify(err)
 	errorMsg := models.ErrorMessage(action)
 	h.client.conn.WriteMessage(websocket.TextMessage, errorMsg.Encode())
 	log.Printf("(Client %s) Error: %s \n", h.client.conn.LocalAddr(), err.Error())
