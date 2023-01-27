@@ -11,9 +11,10 @@ import (
 
 const MODULE_NAME = "monitoring"
 
-var MAINTENANCE_PATHS = map[string]struct{}{
+var SKIP_PATHS = map[string]struct{}{
 	"/api/v1/health":  {},
 	"/api/v1/metrics": {},
+	"/api/ws":         {},
 }
 
 type Type struct {
@@ -54,7 +55,7 @@ func (m *Type) Close() {
 func (m *Type) Middleware(c *fiber.Ctx) error {
 	path := c.Request().URI().Path()
 
-	if _, ok := MAINTENANCE_PATHS[string(path)]; !ok {
+	if _, ok := SKIP_PATHS[string(path)]; !ok {
 		if m.status && m.handler != nil {
 			return m.handler(c)
 		}
