@@ -6,6 +6,7 @@ import (
 	"chasse-api/internal/store"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 	"github.com/leonidasdeim/goconfig"
 )
 
@@ -26,8 +27,8 @@ func NewApiHandler(s *store.Type, c *goconfig.Config[config.Type], m *monitoring
 func (h *ApiHandler) RegisterApiRoutes(app *fiber.App) {
 	apiV1 := app.Group("/api/v1")
 
-	health := apiV1.Group("/health")
-	health.Get("", h.HealthCheck)
+	apiV1.Get("/metrics", monitor.New(monitor.Config{Title: "metrics"}))
+	apiV1.Get("/health", h.HealthCheck)
 
 	session := apiV1.Group("/session")
 	session.Get("/new", h.CreateSession)
