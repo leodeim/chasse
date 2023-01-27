@@ -16,15 +16,17 @@ import (
 
 const MODULE_NAME = "redis_store"
 
-type Store struct {
+type Type struct {
 	config *goconfig.Config[config.Type]
 	db     *redis.Client
 }
 
-func NewStore(c *goconfig.Config[config.Type]) *Store {
-	s := Store{
+func Init(c *goconfig.Config[config.Type]) *Type {
+	s := Type{
 		config: c,
 	}
+
+	s.configure()
 
 	s.config.AddSubscriber(MODULE_NAME)
 	go s.configRunner()
@@ -32,7 +34,7 @@ func NewStore(c *goconfig.Config[config.Type]) *Store {
 	return &s
 }
 
-func (s *Store) reconfigure() {
+func (s *Type) configure() {
 	config := s.config.GetCfg().Store
 	s.db = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", config.Host, config.Port),
@@ -41,19 +43,19 @@ func (s *Store) reconfigure() {
 	})
 }
 
-func (s *Store) configRunner() {
+func (s *Type) configRunner() {
 	for {
-		s.reconfigure()
 		<-s.config.GetSubscriber(MODULE_NAME)
+		s.configure()
 	}
 }
 
-func (s *Store) CreateSession(position string) (*models.SessionActionMessage, error) {
+func (s *Type) CreateSession(position string) (*models.SessionActionMessage, error) {
 	uuid := uuid.New().String()
 	return s.UpdateSession(uuid, position)
 }
 
-func (s *Store) UpdateSession(uuid string, position string) (*models.SessionActionMessage, error) {
+func (s *Type) UpdateSession(uuid string, position string) (*models.SessionActionMessage, error) {
 	positionString, err := json.Marshal(position)
 	if err != nil {
 		return nil, e.Internal{Message: fmt.Sprintf("failed while marshal position string: %v", err)}
@@ -69,7 +71,7 @@ func (s *Store) UpdateSession(uuid string, position string) (*models.SessionActi
 	}, nil
 }
 
-func (s *Store) GetSession(uuid string) (*models.SessionActionMessage, error) {
+func (s *Type) GetSession(uuid string) (*models.SessionActionMessage, error) {
 	data, err := s.db.Get("ses:" + uuid).Result()
 	if err != nil {
 		return nil, e.NotFound{Message: fmt.Sprintf("failed while reading from storage: %v", err)}

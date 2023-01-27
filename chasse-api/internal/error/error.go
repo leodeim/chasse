@@ -17,3 +17,9 @@ type BadRequest struct {
 }
 
 func (e BadRequest) Error() string { return e.Message }
+
+type Info struct {
+	Message string
+}
+
+func (e Info) Error() string { return e.Message }

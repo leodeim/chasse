@@ -10,6 +10,7 @@ const (
 type Type struct {
 	AppName    string     `json:"name" validate:"required"`
 	Version    string     `json:"version" validate:"required"`
+	Prefork    bool       `json:"prefork" default:"false"`
 	Host       string     `json:"host" default:"localhost"`
 	Port       string     `json:"port" default:"8080"`
 	Store      Connection `json:"store" validate:"required"`
@@ -19,12 +20,12 @@ type Type struct {
 type Connection struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
-	Host     string `json:"host" validate:"required"`
+	Host     string `json:"host" default:"localhost"`
 	Port     string `json:"port" validate:"required"`
 }
 
 type Monitoring struct {
-	Id          int64  `json:"id"`
-	Key         string `json:"key"`
-	Environment string `json:"environment"`
+	Id          int64  `json:"id" default:"0"`
+	Key         string `json:"key" default:"undefined"`
+	Environment string `json:"environment" default:"development"`
 }

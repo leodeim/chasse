@@ -2,24 +2,24 @@ package api
 
 import (
 	"chasse-api/internal/config"
+	"chasse-api/internal/monitoring"
 	"chasse-api/internal/store"
 
-	"github.com/airbrake/gobrake/v5"
 	"github.com/gofiber/fiber/v2"
 	"github.com/leonidasdeim/goconfig"
 )
 
 type ApiHandler struct {
-	config   *goconfig.Config[config.Type]
-	store    *store.Store
-	notifier *gobrake.Notifier
+	config  *goconfig.Config[config.Type]
+	store   *store.Type
+	monitor *monitoring.Type
 }
 
-func NewApiHandler(s *store.Store, c *goconfig.Config[config.Type], n *gobrake.Notifier) *ApiHandler {
+func NewApiHandler(s *store.Type, c *goconfig.Config[config.Type], m *monitoring.Type) *ApiHandler {
 	return &ApiHandler{
-		store:    s,
-		config:   c,
-		notifier: n,
+		store:   s,
+		config:  c,
+		monitor: m,
 	}
 }
 

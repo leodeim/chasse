@@ -45,6 +45,7 @@ func OkMessage(action WebsocketAction) SessionActionMessage {
 	}
 }
 
+// TODO: error handle
 func (message *SessionActionMessage) Encode() []byte {
 	json, err := json.Marshal(message)
 	if err != nil {

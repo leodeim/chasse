@@ -1,16 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 
 	"chasse-api/internal/api"
 	"chasse-api/internal/config"
+	e "chasse-api/internal/error"
+	"chasse-api/internal/monitoring"
 	"chasse-api/internal/socket"
 	"chasse-api/internal/store"
 
-	"github.com/airbrake/gobrake/v5"
-	fiberbrake "github.com/airbrake/gobrake/v5/fiber"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
@@ -20,21 +21,29 @@ import (
 )
 
 func main() {
+	log.Print("-- APP START --")
+
 	h, _ := fh.New(fh.WithName("chasse"), fh.WithType(fh.JSON))
 	c, err := goconfig.Init[config.Type](h)
 	if err != nil {
-		log.Panicf("Configuration error: %v", err)
+		log.Panicf("configuration error: %v", err)
+	} else {
+		print(c.GetCfg())
 	}
 
-	notifier := gobrake.NewNotifierWithOptions(&gobrake.NotifierOptions{
-		ProjectId:   c.GetCfg().Monitoring.Id,
-		ProjectKey:  c.GetCfg().Monitoring.Key,
-		Environment: c.GetCfg().Monitoring.Environment,
-	})
-	defer notifier.Close()
+	m := monitoring.Init(c)
+	defer m.Close()
+	m.Notify(e.Info{Message: "application starting"})
 
-	app := fiber.New()
-	store := store.NewStore(c)
+	app := fiber.New(fiber.Config{
+		Prefork:               c.GetCfg().Prefork,
+		CaseSensitive:         true,
+		ServerHeader:          c.GetCfg().AppName,
+		AppName:               c.GetCfg().AppName + "_" + c.GetCfg().Version,
+		DisableStartupMessage: true,
+	})
+
+	s := store.Init(c)
 
 	app.Static("/", "./assets")
 	app.Use(recover.New())
@@ -44,16 +53,18 @@ func main() {
 		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
+	app.Use(m.Middleware)
 
-	if c.GetCfg().Monitoring.Key != "" {
-		app.Use(fiberbrake.New(notifier))
-	}
-
-	socket.InitClient(app, store, notifier)
-	api := api.NewApiHandler(store, c, notifier)
+	socket.InitClient(app, s, m)
+	api := api.NewApiHandler(s, c, m)
 	api.RegisterApiRoutes(app)
 
 	if err := app.Listen(fmt.Sprintf("%s:%s", c.GetCfg().Host, c.GetCfg().Port)); err != nil {
 		log.Panic(err)
 	}
+}
+
+func print(a any) {
+	data, _ := json.MarshalIndent(a, "", "  ")
+	log.Print(string(data))
 }
