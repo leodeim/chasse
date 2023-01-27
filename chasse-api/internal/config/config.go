@@ -10,6 +10,7 @@ const (
 type Type struct {
 	AppName    string     `json:"name" validate:"required"`
 	Version    string     `json:"version" validate:"required"`
+	Prefork    bool       `json:"prefork" default:"false"`
 	Host       string     `json:"host" default:"localhost"`
 	Port       string     `json:"port" default:"8080"`
 	Store      Connection `json:"store" validate:"required"`

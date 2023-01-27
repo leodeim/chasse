@@ -14,16 +14,18 @@ const MODULE_NAME = "monitoring"
 type Type struct {
 	config   *goconfig.Config[config.Type]
 	notifier *gobrake.Notifier
+	handler  fiber.Handler
 	status   bool
 }
 
-func Init(app *fiber.App, c *goconfig.Config[config.Type]) *Type {
+func Init(c *goconfig.Config[config.Type]) *Type {
 	m := Type{
 		config:   c,
 		notifier: nil,
+		handler:  nil,
 	}
 
-	app.Use(fiberbrake.New(m.notifier))
+	m.configure()
 
 	m.config.AddSubscriber(MODULE_NAME)
 	go m.configRunner()
@@ -44,6 +46,14 @@ func (m *Type) Close() {
 	m.status = false
 }
 
+func (m *Type) Middleware(c *fiber.Ctx) error {
+	if m.status && m.handler != nil {
+		return m.handler(c)
+	}
+
+	return c.Next()
+}
+
 func (m *Type) configure() {
 	if !m.isConfigAvailable() {
 		m.Close()
@@ -55,14 +65,14 @@ func (m *Type) configure() {
 		ProjectKey:  m.config.GetCfg().Monitoring.Key,
 		Environment: m.config.GetCfg().Monitoring.Environment,
 	})
-
+	m.handler = fiberbrake.New(m.notifier)
 	m.status = true
 }
 
 func (m *Type) configRunner() {
 	for {
-		m.configure()
 		<-m.config.GetSubscriber(MODULE_NAME)
+		m.configure()
 	}
 }
 
