@@ -19,12 +19,12 @@ type Type struct {
 type Connection struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
-	Host     string `json:"host" validate:"required"`
+	Host     string `json:"host" default:"localhost"`
 	Port     string `json:"port" validate:"required"`
 }
 
 type Monitoring struct {
-	Id          int64  `json:"id"`
-	Key         string `json:"key"`
-	Environment string `json:"environment"`
+	Id          int64  `json:"id" default:"0"`
+	Key         string `json:"key" default:"undefined"`
+	Environment string `json:"environment" default:"development"`
 }
