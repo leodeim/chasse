@@ -9,16 +9,20 @@ import (
 	e "chasse-api/internal/error"
 	"chasse-api/internal/models"
 
-	"github.com/go-redis/redis"
 	"github.com/google/uuid"
 	"github.com/leonidasdeim/goconfig"
 )
 
 const MODULE_NAME = "redis_store"
 
+type Storage interface {
+	Get(string) (string, error)
+	Set(string, any) (string, error)
+}
+
 type Type struct {
 	config *goconfig.Config[config.Type]
-	db     *redis.Client
+	db     Storage
 }
 
 func Init(c *goconfig.Config[config.Type]) *Type {
@@ -35,12 +39,8 @@ func Init(c *goconfig.Config[config.Type]) *Type {
 }
 
 func (s *Type) configure() {
-	config := s.config.GetCfg().Store
-	s.db = redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("%s:%s", config.Host, config.Port),
-		Password: config.Password,
-		DB:       0,
-	})
+	c := s.config.GetCfg().Store
+	s.db = NewRedis(c.Host, c.Port, c.Password, 24*time.Hour)
 }
 
 func (s *Type) configRunner() {
@@ -61,7 +61,7 @@ func (s *Type) UpdateSession(uuid string, position string) (*models.SessionActio
 		return nil, e.Internal{Message: fmt.Sprintf("failed while marshal position string: %v", err)}
 	}
 
-	if err := s.db.Set("ses:"+uuid, positionString, 24*time.Hour).Err(); err != nil {
+	if _, err := s.db.Set("ses:"+uuid, positionString); err != nil {
 		return nil, e.Internal{Message: fmt.Sprintf("failed while writing to storage: %v", err)}
 	}
 
@@ -72,7 +72,7 @@ func (s *Type) UpdateSession(uuid string, position string) (*models.SessionActio
 }
 
 func (s *Type) GetSession(uuid string) (*models.SessionActionMessage, error) {
-	data, err := s.db.Get("ses:" + uuid).Result()
+	data, err := s.db.Get("ses:" + uuid)
 	if err != nil {
 		return nil, e.NotFound{Message: fmt.Sprintf("failed while reading from storage: %v", err)}
 	}
