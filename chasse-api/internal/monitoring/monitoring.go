@@ -11,6 +11,12 @@ import (
 
 const MODULE_NAME = "monitoring"
 
+var SKIP_PATHS = map[string]struct{}{
+	"/api/v1/health":  {},
+	"/api/v1/metrics": {},
+	"/api/ws":         {},
+}
+
 type Type struct {
 	config   *goconfig.Config[config.Type]
 	notifier *gobrake.Notifier
@@ -47,8 +53,12 @@ func (m *Type) Close() {
 }
 
 func (m *Type) Middleware(c *fiber.Ctx) error {
-	if m.status && m.handler != nil {
-		return m.handler(c)
+	path := c.Request().URI().Path()
+
+	if _, ok := SKIP_PATHS[string(path)]; !ok {
+		if m.status && m.handler != nil {
+			return m.handler(c)
+		}
 	}
 
 	return c.Next()

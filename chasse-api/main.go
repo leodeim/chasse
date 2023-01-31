@@ -21,7 +21,7 @@ import (
 )
 
 func main() {
-	log.Print("-- APP START --")
+	log.Print("- APP START -")
 
 	h, _ := fh.New(fh.WithName("chasse"), fh.WithType(fh.JSON))
 	c, err := goconfig.Init[config.Type](h)
@@ -45,7 +45,6 @@ func main() {
 
 	s := store.Init(c)
 
-	app.Static("/", "./assets")
 	app.Use(recover.New())
 	app.Use(logger.New())
 	app.Use(cors.New())
