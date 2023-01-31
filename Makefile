@@ -1,13 +1,15 @@
 include .env
 
+.DEFAULT_GOAL := build
+
 API=chasse-api
 APP=chasse-app
 BUILD_DIR=build
+
 GIT_SHA_FETCH := $(shell git rev-parse HEAD | cut -c 1-8)
 export GIT_SHA=$(GIT_SHA_FETCH)
 API_FILE_NAME=${API}-${GIT_SHA}
 APP_FILE_NAME=${APP}-${GIT_SHA}.tar.gz
-HEALTH=
 
 .PHONY: clean
 clean:
