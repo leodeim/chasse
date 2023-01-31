@@ -3,7 +3,7 @@ package store
 import (
 	"encoding/json"
 	"fmt"
-	"time"
+	"sync"
 
 	"chasse-api/internal/config"
 	e "chasse-api/internal/error"
@@ -15,13 +15,9 @@ import (
 
 const MODULE_NAME = "redis_store"
 
-type Storage interface {
-	Get(string) (string, error)
-	Set(string, any) (string, error)
-}
-
 type Type struct {
 	config *goconfig.Config[config.Type]
+	mutex  sync.Mutex
 	db     Storage
 }
 
@@ -39,8 +35,13 @@ func Init(c *goconfig.Config[config.Type]) *Type {
 }
 
 func (s *Type) configure() {
-	c := s.config.GetCfg().Store
-	s.db = NewRedis(c.Host, c.Port, c.Password, 24*time.Hour)
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if s.db != nil && s.db.Status() {
+		s.db.Close()
+	}
+	s.db = StorageFactory(s.config.GetCfg().Store)
 }
 
 func (s *Type) configRunner() {
@@ -56,12 +57,15 @@ func (s *Type) CreateSession(position string) (*models.SessionActionMessage, err
 }
 
 func (s *Type) UpdateSession(uuid string, position string) (*models.SessionActionMessage, error) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	positionString, err := json.Marshal(position)
 	if err != nil {
 		return nil, e.Internal{Message: fmt.Sprintf("failed while marshal position string: %v", err)}
 	}
 
-	if _, err := s.db.Set("ses:"+uuid, positionString); err != nil {
+	if err := s.db.Set("ses:"+uuid, positionString); err != nil {
 		return nil, e.Internal{Message: fmt.Sprintf("failed while writing to storage: %v", err)}
 	}
 
@@ -72,13 +76,16 @@ func (s *Type) UpdateSession(uuid string, position string) (*models.SessionActio
 }
 
 func (s *Type) GetSession(uuid string) (*models.SessionActionMessage, error) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
 	data, err := s.db.Get("ses:" + uuid)
 	if err != nil {
 		return nil, e.NotFound{Message: fmt.Sprintf("failed while reading from storage: %v", err)}
 	}
 
 	var position string
-	if err := json.Unmarshal([]byte(data), &position); err != nil {
+	if err := json.Unmarshal(data, &position); err != nil {
 		return nil, e.Internal{Message: fmt.Sprintf("failed while unmarshal position string: %v", err)}
 	}
 
