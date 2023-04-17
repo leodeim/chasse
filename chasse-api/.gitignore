@@ -20,3 +20,4 @@ chasse.default.json
 chasse-api
 
 build/
+db/

@@ -13,7 +13,6 @@ APP_FILE_NAME=${APP}-${GIT_SHA}.tar.gz
 
 .PHONY: clean
 clean:
-	docker-compose down
 	if [ -d ${APP}/${BUILD_DIR} ] ; then rm -rf ${APP}/${BUILD_DIR} ; fi
 	if [ -d ${API}/${BUILD_DIR} ] ; then rm -rf ${API}/${BUILD_DIR} ; fi
 	if [ -d ${API}/db ] ; then rm -rf ${API}/db ; fi
@@ -35,6 +34,13 @@ build-api:
 	go mod tidy;\
 	GOOS=linux GOARCH=amd64 go build -o ../build/${API_FILE_NAME} .;
 
+.PHONY: build-api-native
+build-api-native: 
+	if ! [ -d ${BUILD_DIR} ] ; then mkdir ${BUILD_DIR} ; fi
+	cd ${API};\
+	go mod tidy;\
+	go build -o ../build/${API}-native .;
+
 .PHONY: build
 build: build-api build-app 
 
@@ -52,7 +58,6 @@ run-app-remote:
 
 .PHONY: run-api
 run-api: 
-	docker-compose up -d
 	cd ${API};\
 	if ! [ -d ${BUILD_DIR} ] ; then mkdir ${BUILD_DIR} ; fi;\
 	go mod tidy;\

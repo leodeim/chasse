@@ -1,4 +1,4 @@
-package impl
+package storages
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ type Redis struct {
 	status     bool
 }
 
-func NewRedis(host string, port string, pw string, exp int) *Redis {
+func NewRedis(host string, port string, pw string, exp int) (*Redis, error) {
 	client := redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", host, port),
 		Password: pw,
@@ -24,7 +24,7 @@ func NewRedis(host string, port string, pw string, exp int) *Redis {
 		client:     client,
 		expiration: time.Duration(exp) * time.Hour,
 		status:     true,
-	}
+	}, nil
 }
 
 func (r *Redis) Get(key string) ([]byte, error) {

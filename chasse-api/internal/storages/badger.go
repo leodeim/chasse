@@ -1,16 +1,19 @@
-package impl
+package storages
 
 import (
-	"log"
+	e "chasse-api/internal/error"
+	"chasse-api/internal/logger"
 
 	badger "github.com/dgraph-io/badger/v3"
 )
+
+var log = logger.New("BADGER")
 
 type BadgerDB struct {
 	client *badger.DB
 }
 
-func NewBadgerDB(mem bool, path string) *BadgerDB {
+func NewBadgerDB(mem bool, path string) (*BadgerDB, error) {
 	b := BadgerDB{}
 	var err error
 
@@ -18,12 +21,16 @@ func NewBadgerDB(mem bool, path string) *BadgerDB {
 		path = ""
 	}
 
-	b.client, err = badger.Open(badger.DefaultOptions(path).WithInMemory(mem))
+	b.client, err = badger.Open(
+		badger.DefaultOptions(path).
+			WithInMemory(mem).
+			WithLogger(log),
+	)
 	if err != nil {
-		log.Fatal(err)
+		return nil, e.BuildErrorf(e.INTERNAL, "failed at badger connection: %s", err.Error())
 	}
 
-	return &b
+	return &b, nil
 }
 
 func (b *BadgerDB) Get(key string) ([]byte, error) {
