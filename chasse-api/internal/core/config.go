@@ -4,8 +4,8 @@ import (
 	"chasse-api/internal/logger"
 	"encoding/json"
 
-	"github.com/leonidasdeim/goconfig"
-	fh "github.com/leonidasdeim/goconfig/pkg/filehandler"
+	"github.com/leonidasdeim/cog"
+	fh "github.com/leonidasdeim/cog/pkg/filehandler"
 )
 
 type Subscriber int
@@ -45,35 +45,32 @@ type MonitorConfig struct {
 type Callback func(Configuration) error
 
 type Config struct {
-	config    *goconfig.Config[Configuration]
+	cog       *cog.Config[Configuration]
 	callbacks map[int]Callback
 	quit      chan bool
 }
 
 func InitConfig() *Config {
 	h, _ := fh.New(fh.WithName("chasse"), fh.WithType(fh.JSON))
-	config, err := goconfig.Init[Configuration](h)
+	c, err := cog.Init[Configuration](h)
 	if err != nil {
-		log.Errorf("InitConfig error: %s", err.Error())
-	} else {
-		print(config.GetCfg())
+		log.Fatalf("InitConfig error: %s", err.Error())
 	}
+	print(c.GetCfg())
 
-	c := &Config{
-		config:    config,
+	return &Config{
+		cog:       c,
 		callbacks: make(map[int]Callback),
 		quit:      make(chan bool, 1),
 	}
-
-	return c
 }
 
 func (c *Config) Get() Configuration {
-	return c.config.GetCfg()
+	return c.cog.GetCfg()
 }
 
 func (c *Config) GetTimestamp() string {
-	return c.config.GetTimestamp()
+	return c.cog.GetTimestamp()
 }
 
 func (c *Config) Close() {

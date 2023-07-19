@@ -44,7 +44,7 @@ func InitStore(c *Config) (*Store, error) {
 		return nil, err
 	}
 
-	c.config.AddCallback(
+	c.cog.AddCallback(
 		func(c Configuration) {
 			s.configure(c)
 		},

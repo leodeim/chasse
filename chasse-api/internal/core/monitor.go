@@ -25,7 +25,7 @@ func InitMonitor(c *Config) *Monitor {
 	}
 
 	m.configure(c.Get())
-	c.config.AddCallback(
+	c.cog.AddCallback(
 		func(c Configuration) {
 			m.configure(c)
 		},

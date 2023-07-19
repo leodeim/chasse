@@ -2,6 +2,7 @@ package logger
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -12,17 +13,19 @@ type Logger struct {
 type LogLevel string
 
 const (
-	LOG_ERROR   LogLevel = "ERROR"
-	LOG_INFO    LogLevel = "INFO"
-	LOG_DEBUG   LogLevel = "DEBUG"
-	LOG_WARNING LogLevel = "WARN"
+	levelFatal   LogLevel = "FATAL"
+	levelError   LogLevel = "ERROR"
+	levelWarning LogLevel = "WARN"
+	levelInfo    LogLevel = "INFO"
+	levelDebug   LogLevel = "DEBUG"
 )
 
 var logLevels = map[LogLevel]int{
-	LOG_ERROR:   1,
-	LOG_WARNING: 2,
-	LOG_INFO:    3,
-	LOG_DEBUG:   4,
+	levelFatal:   0,
+	levelError:   1,
+	levelWarning: 2,
+	levelInfo:    3,
+	levelDebug:   4,
 }
 
 const (
@@ -31,9 +34,9 @@ const (
 )
 
 var (
-	// default log level LOG_INFO
-	logLevel       = logLevels[LOG_INFO]
-	FiberLogFormat = fmt.Sprintf(logFormat, "${time}", LOG_INFO, "FIBER", "(${ip}:${port}) ${method} ${status} - ${path}\n")
+	// default log level INFO
+	logLevel       = logLevels[levelInfo]
+	FiberLogFormat = fmt.Sprintf(logFormat, "${time}", levelInfo, "FIBER", "(${ip}:${port}) ${method} ${status} - ${path}\n")
 )
 
 // name -> module name, will be visible in log message
@@ -42,7 +45,7 @@ func New(name string) *Logger {
 }
 
 func SetGlobalLogLevel(level LogLevel) error {
-	if v, ok := logLevels[level]; ok {
+	if v, ok := logLevels[LogLevel(strings.ToUpper(string(level)))]; ok {
 		logLevel = v
 		return nil
 	}
@@ -51,35 +54,46 @@ func SetGlobalLogLevel(level LogLevel) error {
 }
 
 func (l *Logger) Infof(format string, v ...any) {
-	l.write(LOG_INFO, fmt.Sprintf(format, v...))
+	l.write(levelInfo, fmt.Sprintf(format, v...))
 }
 
 func (l *Logger) Info(message string) {
-	l.write(LOG_INFO, message)
+	l.write(levelInfo, message)
 }
 
 func (l *Logger) Errorf(format string, v ...any) {
-	l.write(LOG_ERROR, fmt.Sprintf(format, v...))
+	l.write(levelError, fmt.Sprintf(format, v...))
 }
 
 func (l *Logger) Error(message string) {
-	l.write(LOG_ERROR, message)
+	l.write(levelError, message)
 }
 
 func (l *Logger) Warningf(format string, v ...any) {
-	l.write(LOG_WARNING, fmt.Sprintf(format, v...))
+	l.write(levelWarning, fmt.Sprintf(format, v...))
 }
 
 func (l *Logger) Warning(message string) {
-	l.write(LOG_WARNING, message)
+	l.write(levelWarning, message)
 }
 
 func (l *Logger) Debugf(format string, v ...any) {
-	l.write(LOG_DEBUG, fmt.Sprintf(format, v...))
+	l.write(levelDebug, fmt.Sprintf(format, v...))
 }
 
 func (l *Logger) Debug(message string) {
-	l.write(LOG_DEBUG, message)
+	l.write(levelDebug, message)
+}
+
+func (l *Logger) Fatalf(format string, v ...any) {
+	message := fmt.Sprintf(format, v...)
+	l.write(levelFatal, message)
+	panic(message)
+}
+
+func (l *Logger) Fatal(message string) {
+	l.write(levelFatal, message)
+	panic(message)
 }
 
 func (l *Logger) write(level LogLevel, message string) {
