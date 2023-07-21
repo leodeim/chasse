@@ -16,8 +16,8 @@ const (
 )
 
 type Configuration struct {
-	AppName  string          `json:"name" validate:"required"`
-	Version  string          `json:"version" validate:"required"`
+	AppName  string          `json:"name" default:"chasse"`
+	Version  string          `json:"version" default:"dev"`
 	Prefork  bool            `json:"prefork" default:"false"`
 	Host     string          `json:"host" default:"localhost"`
 	Port     string          `json:"port" default:"8080"`
