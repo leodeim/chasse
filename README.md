@@ -15,8 +15,6 @@
 
 Just a simple chessboard - without timers, rules etc. Play just like you do it OTB.
 
-<https://chasse.fun>
-
 ## Build
 
 Builds API binary and APP archive in `build/` folder
