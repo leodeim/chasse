@@ -4,8 +4,8 @@ import (
 	"strings"
 	"sync"
 
-	e "chasse-api/internal/error"
-	"chasse-api/internal/storages"
+	e "chasse-api/error"
+	"chasse-api/storages"
 )
 
 type Storage interface {

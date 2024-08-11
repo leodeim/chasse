@@ -1,7 +1,7 @@
 package engine
 
 import (
-	e "chasse-api/internal/error"
+	e "chasse-api/error"
 	"encoding/json"
 )
 

@@ -1,7 +1,7 @@
 package api
 
 import (
-	"chasse-api/internal/game/engine"
+	"chasse-api/game/engine"
 )
 
 type NewSessionRequest struct {

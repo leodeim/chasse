@@ -1,11 +1,11 @@
 package main
 
 import (
-	"chasse-api/internal/core"
-	e "chasse-api/internal/error"
-	"chasse-api/internal/logger"
-	"chasse-api/internal/modules/api"
-	"chasse-api/internal/modules/socket"
+	"chasse-api/core"
+	e "chasse-api/error"
+	"chasse-api/logger"
+	"chasse-api/modules/api"
+	"chasse-api/modules/socket"
 )
 
 var log = logger.New("MAIN")

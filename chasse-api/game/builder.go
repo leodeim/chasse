@@ -1,9 +1,9 @@
 package game
 
 import (
-	"chasse-api/internal/core"
-	e "chasse-api/internal/error"
-	"chasse-api/internal/game/engine"
+	"chasse-api/core"
+	e "chasse-api/error"
+	"chasse-api/game/engine"
 
 	"github.com/google/uuid"
 )

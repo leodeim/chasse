@@ -1,8 +1,8 @@
 package engine
 
 import (
-	e "chasse-api/internal/error"
-	"chasse-api/internal/utils"
+	e "chasse-api/error"
+	"chasse-api/utils"
 )
 
 type Mode string

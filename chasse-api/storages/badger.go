@@ -1,8 +1,8 @@
 package storages
 
 import (
-	e "chasse-api/internal/error"
-	"chasse-api/internal/logger"
+	e "chasse-api/error"
+	"chasse-api/logger"
 
 	badger "github.com/dgraph-io/badger/v3"
 )

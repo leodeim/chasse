@@ -1,8 +1,8 @@
 package game
 
 import (
-	"chasse-api/internal/game/engine"
-	"chasse-api/internal/utils"
+	"chasse-api/game/engine"
+	"chasse-api/utils"
 )
 
 type Session struct {

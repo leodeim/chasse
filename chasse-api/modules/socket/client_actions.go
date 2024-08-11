@@ -1,6 +1,6 @@
 package socket
 
-import e "chasse-api/internal/error"
+import e "chasse-api/error"
 
 func handleClientMessage(c *Client, msg *Message) error {
 	log.Debugf("(client %s) received message: %v\n", c.connection.RemoteAddr(), msg.String())

@@ -3,8 +3,8 @@ package api
 import (
 	"net/http"
 
-	e "chasse-api/internal/error"
-	"chasse-api/internal/game"
+	e "chasse-api/error"
+	"chasse-api/game"
 
 	"github.com/go-playground/validator/v10"
 	"github.com/gofiber/fiber/v2"

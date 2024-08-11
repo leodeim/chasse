@@ -1,8 +1,8 @@
 package socket
 
 import (
-	"chasse-api/internal/game"
-	"chasse-api/internal/utils"
+	"chasse-api/game"
+	"chasse-api/utils"
 )
 
 type Request struct {

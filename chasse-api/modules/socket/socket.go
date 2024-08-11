@@ -1,8 +1,8 @@
 package socket
 
 import (
-	"chasse-api/internal/core"
-	"chasse-api/internal/logger"
+	"chasse-api/core"
+	"chasse-api/logger"
 )
 
 var log = logger.New("WS")

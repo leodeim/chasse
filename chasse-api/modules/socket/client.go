@@ -1,8 +1,8 @@
 package socket
 
 import (
-	"chasse-api/internal/core"
-	e "chasse-api/internal/error"
+	"chasse-api/core"
+	e "chasse-api/error"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/websocket/v2"

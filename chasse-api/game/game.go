@@ -1,8 +1,8 @@
 package game
 
 import (
-	"chasse-api/internal/core"
-	"chasse-api/internal/game/engine"
+	"chasse-api/core"
+	"chasse-api/game/engine"
 )
 
 // var log = logger.New("GAME")

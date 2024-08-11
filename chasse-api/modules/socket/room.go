@@ -1,9 +1,9 @@
 package socket
 
 import (
-	"chasse-api/internal/core"
-	e "chasse-api/internal/error"
-	"chasse-api/internal/game"
+	"chasse-api/core"
+	e "chasse-api/error"
+	"chasse-api/game"
 )
 
 type Room struct {

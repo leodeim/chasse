@@ -3,7 +3,7 @@ package core
 import (
 	"sync"
 
-	"chasse-api/internal/logger"
+	"chasse-api/logger"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"

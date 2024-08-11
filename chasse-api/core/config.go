@@ -1,7 +1,7 @@
 package core
 
 import (
-	"chasse-api/internal/logger"
+	"chasse-api/logger"
 	"encoding/json"
 
 	"github.com/leonidasdeim/cog"
