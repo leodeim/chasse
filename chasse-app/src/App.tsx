@@ -27,11 +27,15 @@ export default function App() {
 
     return (
         <div className="flex flex-col items-center justify-center bg-colorMain min-h-screen text-lg text-white">
-            <InfoDialog
-                isOpen={!wsState}
-                title="Connecting..."
-                text="Please wait, trying to reconnect"
-            />
+            {
+                !wsState &&
+                <InfoDialog
+                    isOpen={!wsState}
+                    title="Connecting..."
+                    text="Please wait, trying to reconnect"
+                />
+            }
+
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="board/" element={<Home />} />

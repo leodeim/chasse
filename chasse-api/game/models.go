@@ -11,11 +11,16 @@ type Session struct {
 	State any         `json:"state"`
 }
 
+type SessionResponse struct {
+	Id       string      `json:"id"`
+	Mode     engine.Mode `json:"mode"`
+	Position string      `json:"position"`
+}
+
 type Response struct {
 	Operation Operation `json:"operation"`
 	Verdict   Verdict   `json:"verdict"`
 	Position  string    `json:"position"`
-	Session   Session   `json:"session"`
 	Message   string    `json:"message"`
 }
 
@@ -35,11 +40,6 @@ func (resp *Response) SetMessage(o string) *Response {
 
 func (resp *Response) SetRequestData(o Request) *Response {
 	resp.Operation = o.Operation
-	return resp
-}
-
-func (resp *Response) SetSession(o Session) *Response {
-	resp.Session = o
 	return resp
 }
 

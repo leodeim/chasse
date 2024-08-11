@@ -46,9 +46,7 @@ func (api *Api) NewSession(c *fiber.Ctx) error {
 		return api.handleError(c, err)
 	}
 
-	resp := chess.Do(game.NewRequest().SetOperation(game.STATUS))
-
-	return c.Status(http.StatusCreated).JSON(resp.Session)
+	return c.Status(http.StatusCreated).JSON(chess.GetSession())
 }
 
 func (api *Api) GetSession(c *fiber.Ctx) error {
@@ -65,9 +63,7 @@ func (api *Api) GetSession(c *fiber.Ctx) error {
 		return api.handleError(c, err)
 	}
 
-	resp := chess.Do(game.NewRequest().SetOperation(game.STATUS))
-
-	return c.Status(http.StatusOK).JSON(resp)
+	return c.Status(http.StatusOK).JSON(chess.GetSession())
 }
 
 func (api *Api) handleError(c *fiber.Ctx, err error) error {

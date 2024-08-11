@@ -3,6 +3,7 @@ package engine
 import (
 	e "chasse-api/error"
 	"encoding/json"
+	"fmt"
 )
 
 type free struct {
@@ -38,6 +39,7 @@ func (f *free) addPositions(pos ...string) {
 func (f *free) Move(move Move) (bool, error) {
 	posMap := make(map[string]string)
 	if err := json.Unmarshal([]byte(f.GetPosition()), &posMap); err != nil {
+		fmt.Println("this")
 		return false, e.BuildErrorf(e.INTERNAL, "failed while unmarshal position object: %s", err.Error())
 	}
 
@@ -49,9 +51,9 @@ func (f *free) Move(move Move) (bool, error) {
 		return false, nil
 	}
 
-	if v, ok := posMap[move.Source]; !ok || v != move.Piece {
-		return false, nil
-	}
+	// if v, ok := posMap[move.Source]; !ok || v != move.Piece {
+	// 	return false, nil
+	// }
 
 	if move.Target != "offBoard" {
 		posMap[move.Target] = move.Piece

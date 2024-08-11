@@ -7,8 +7,6 @@ import (
 
 // var log = logger.New("GAME")
 
-const notImplResp = "not implemented"
-
 type Game struct {
 	app       *core.App
 	engine    engine.Engine
@@ -65,6 +63,10 @@ func (g *Game) store() error {
 	}
 
 	return nil
+}
+
+func (g *Game) GetSession() *SessionResponse {
+	return &SessionResponse{g.sessionId, g.engine.GetMode(), g.engine.GetPosition()}
 }
 
 func (g *Game) Do(req *Request) *Response {
@@ -125,7 +127,6 @@ func (g *Game) getStatus(req *Request) *Response {
 	return NewResponse().
 		SetRequestData(*req).
 		SetPosition(g.engine.GetPosition()).
-		SetSession(Session{g.sessionId, g.engine.GetMode(), g.engine.GetState()}).
 		SetVerdict(OK)
 }
 
