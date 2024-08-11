@@ -21,6 +21,18 @@ func (e *strict) Move(move Move) (bool, error) {
 	return false, nil
 }
 
+func (e *strict) Back() (bool, error) {
+	return false, nil
+}
+
+func (e *strict) Reset() (bool, error) {
+	return false, nil
+}
+
+func (e *strict) Clear() (bool, error) {
+	return false, nil
+}
+
 func (e *strict) GetState() any {
 	return "TODO"
 }

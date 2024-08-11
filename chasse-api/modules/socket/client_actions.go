@@ -18,7 +18,7 @@ func handleClientMessage(c *Client, msg *Message) error {
 	default:
 		return e.BuildErrorf(e.BAD_REQUEST, "bad message type: %s", msg.String())
 	}
-}
+	}
 
 func sendAction(c *Client, msg *Message) error {
 	if room := findRoom(c.sessionId); room != nil {

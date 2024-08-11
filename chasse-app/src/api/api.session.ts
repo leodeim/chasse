@@ -31,7 +31,7 @@ export function getSession(id: string, ok: Function, nok: Function) {
 
 export function newSession(ok: Function, nok: Function) {
     axios
-        .get(getApiUrl() + `api/v1/session/new`)
+        .get(getApiUrl() + `api/v1/session`)
         .then((response: AxiosResponse) => {
             const schema = Joi.object({
                 action: Joi.number().optional(),

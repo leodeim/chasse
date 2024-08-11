@@ -68,6 +68,25 @@ func (f *free) Move(move Move) (bool, error) {
 	return true, nil
 }
 
+func (f *free) Back() (bool, error) {
+	if len(f.positions) <= 1 {
+		return false, e.BuildErrorf(e.BAD_REQUEST, "nowhere to go back")
+	}
+
+	f.positions = f.positions[:len(f.positions)-1]
+	return true, nil
+}
+
+func (f *free) Reset() (bool, error) {
+	f.addPositions(BLANK_BOARD)
+	return true, nil
+}
+
+func (f *free) Clear() (bool, error) {
+	f.addPositions(CLEAR_BOARD)
+	return true, nil
+}
+
 func (f *free) GetState() any {
 	return FreeState{
 		Positions: f.positions,

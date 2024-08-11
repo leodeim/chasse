@@ -103,7 +103,33 @@ func (g *Game) Do(req *Request) *Response {
 
 func (g *Game) move(req *Request) *Response {
 	ok, err := g.engine.Move(req.Move)
+	return g.createResponse(req, ok, err)
+}
 
+func (g *Game) back(req *Request) *Response {
+	ok, err := g.engine.Back()
+	return g.createResponse(req, ok, err)
+}
+
+func (g *Game) reset(req *Request) *Response {
+	ok, err := g.engine.Reset()
+	return g.createResponse(req, ok, err)
+}
+
+func (g *Game) clear(req *Request) *Response {
+	ok, err := g.engine.Clear()
+	return g.createResponse(req, ok, err)
+}
+
+func (g *Game) getStatus(req *Request) *Response {
+	return NewResponse().
+		SetRequestData(*req).
+		SetPosition(g.engine.GetPosition()).
+		SetSession(Session{g.sessionId, g.engine.GetMode(), g.engine.GetState()}).
+		SetVerdict(OK)
+}
+
+func (g *Game) createResponse(req *Request, ok bool, err error) *Response {
 	resp := NewResponse().
 		SetRequestData(*req).
 		SetPosition(g.engine.GetPosition())
@@ -115,24 +141,4 @@ func (g *Game) move(req *Request) *Response {
 	}
 
 	return resp.SetVerdict(UPDATED)
-}
-
-func (g *Game) back(req *Request) *Response {
-	return NewResponse().SetRequestData(*req).SetVerdict(INVALID).SetMessage(notImplResp)
-}
-
-func (g *Game) reset(req *Request) *Response {
-	return NewResponse().SetRequestData(*req).SetVerdict(INVALID).SetMessage(notImplResp)
-}
-
-func (g *Game) clear(req *Request) *Response {
-	return NewResponse().SetRequestData(*req).SetVerdict(INVALID).SetMessage(notImplResp)
-}
-
-func (g *Game) getStatus(req *Request) *Response {
-	return NewResponse().
-		SetRequestData(*req).
-		SetPosition(g.engine.GetPosition()).
-		SetSession(Session{g.sessionId, g.engine.GetMode(), g.engine.GetState()}).
-		SetVerdict(OK)
 }

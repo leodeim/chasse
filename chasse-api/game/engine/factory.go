@@ -20,6 +20,9 @@ type Move struct {
 
 type Engine interface {
 	Move(Move) (bool, error)
+	Back() (bool, error)
+	Reset() (bool, error)
+	Clear() (bool, error)
 	GetState() any
 	GetPosition() string
 	GetMode() Mode
